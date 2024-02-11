@@ -7,8 +7,17 @@ import { IconType as LucideIcon } from 'react-icons';
 import { TbCategory2 } from "react-icons/tb";
 import { FaAdversal } from "react-icons/fa6";
 import { FaGooglePlay } from "react-icons/fa";
+import { ReactNode } from 'react';
+import { IconType } from 'react-icons';
 
-const cardData = [
+interface CardData {
+  label: string;
+  amount?: string;
+  description?: string;
+  icon: React.ComponentType<{ size?: string }>; // Use React.ComponentType for icon
+}
+
+const cardData: CardData[] = [
   {
     label: "Apps",
     amount: "50",
@@ -16,12 +25,12 @@ const cardData = [
   },
   {
     label: "CATEGORIES",
-    discription: "COMING SOON",
+    description: "COMING SOON",
     icon: TbCategory2,
   },
   {
-    label: "ADVETISEMENTS",
-    discription: "Inactive",
+    label: "ADVERTISEMENTS",
+    description: "Inactive",
     icon: FaAdversal,
   },
 ];
@@ -35,8 +44,8 @@ export default function Home() {
           <Card
             key={i}
             amount={d.amount || "N/A"}
-            discription={d.discription || ""}
-            icon={d.icon as LucideIcon}
+            discription={d.description || ""}
+            icon={d.icon}
             label={d.label}
           />
         ))}
