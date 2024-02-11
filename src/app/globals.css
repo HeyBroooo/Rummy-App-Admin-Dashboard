@@ -3,15 +3,20 @@
 @tailwind utilities;
  
 @layer base {
-
-  
-
   h1, h2, h3, h4, h5, h6 {
     @apply text-red-500;
   }
 
   p {
     @apply text-blue-500;
+  }
+
+  * {
+    @apply border-border; /* Make sure 'border-border' is defined */
+  }
+
+  body {
+    @apply bg-background text-foreground;
   }
 
   
@@ -78,13 +83,6 @@
   }
 }
  
-@layer base {
-  * {
-    @apply border-border;
-  }
-  body {
-    @apply bg-background text-foreground;
-  }
-}
+
 
 
