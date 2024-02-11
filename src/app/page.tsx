@@ -35,7 +35,7 @@ export default function Home() {
             key={i}
             amount={d.amount || "N/A"}
             discription={d.discription || ""}
-            icon = {<d.icon />}
+            icon = {d.icon}
             label={d.label}
           />
         ))}
