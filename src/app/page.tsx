@@ -33,8 +33,8 @@ export default function Home() {
       {cardData.map((d, i) => ( 
           <Card
             key={i}
-            amount={d.amount}
-            discription={d.discription}
+            amount={d.amount || "N/A"}
+            discription={d.discription || ""}
             icon={d.icon}
             label={d.label}
           />
