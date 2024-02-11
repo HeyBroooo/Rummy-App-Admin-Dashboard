@@ -3,6 +3,7 @@
 import PageTitle from "@/components/PageTitle";
 import Card, { CardContent, CardProps } from "@/components/Card";
 import BarChart from "@/components/BarChart";
+import { IconType as LucideIcon } from 'react-icons';
 import { TbCategory2 } from "react-icons/tb";
 import { FaAdversal } from "react-icons/fa6";
 import { FaGooglePlay } from "react-icons/fa";
@@ -35,7 +36,7 @@ export default function Home() {
             key={i}
             amount={d.amount || "N/A"}
             discription={d.discription || ""}
-            icon={d.icon}
+            icon={d.icon as LucideIcon}
             label={d.label}
           />
         ))}
