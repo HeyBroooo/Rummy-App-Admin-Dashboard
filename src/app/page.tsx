@@ -3,21 +3,11 @@
 import PageTitle from "@/components/PageTitle";
 import Card, { CardContent, CardProps } from "@/components/Card";
 import BarChart from "@/components/BarChart";
-import { IconType as LucideIcon } from 'react-icons';
 import { TbCategory2 } from "react-icons/tb";
 import { FaAdversal } from "react-icons/fa6";
 import { FaGooglePlay } from "react-icons/fa";
-import { ReactNode } from 'react';
-import { IconType } from 'react-icons';
 
-interface CardData {
-  label: string;
-  amount?: string;
-  description?: string;
-  icon: React.ComponentType<{ size?: string }>; // Use React.ComponentType for icon
-}
-
-const cardData: CardData[] = [
+const cardData = [
   {
     label: "Apps",
     amount: "50",
@@ -25,12 +15,12 @@ const cardData: CardData[] = [
   },
   {
     label: "CATEGORIES",
-    description: "COMING SOON",
+    discription: "COMING SOON",
     icon: TbCategory2,
   },
   {
-    label: "ADVERTISEMENTS",
-    description: "Inactive",
+    label: "ADVETISEMENTS",
+    discription: "Inactive",
     icon: FaAdversal,
   },
 ];
@@ -44,8 +34,8 @@ export default function Home() {
           <Card
             key={i}
             amount={d.amount || "N/A"}
-            discription={d.description || ""}
-            icon={d.icon}
+            discription={d.discription || ""}
+            icon
             label={d.label}
           />
         ))}
