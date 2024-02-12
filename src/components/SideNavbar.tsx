@@ -16,10 +16,6 @@ import {
 } from "lucide-react";
 import { Button } from "./ui/button";
 
-
-
-
-
 import { useWindowWidth } from "@react-hook/window-size";
 
 export default function SideNavbar({}: Props) {
@@ -52,33 +48,32 @@ export default function SideNavbar({}: Props) {
             title: "Dashboard",
             href: "/",
             icon: LayoutDashboard,
-            variant: "default"
+            variant: "default",
           },
           {
             title: "Add-App",
             href: "/users",
             icon: PlusCircle,
-            variant: "ghost"
+            variant: "ghost",
           },
           {
             title: "App-List",
             href: "/orders",
             icon: List,
-            variant: "ghost"
+            variant: "ghost",
           },
           {
             title: "Advertisement",
             href: "/settings",
             icon: Megaphone,
-            variant: "ghost"
-          }
-          ,
+            variant: "ghost",
+          },
           {
             title: "Site-Settings",
             href: "/formsite",
             icon: Settings,
-            variant: "ghost"
-          }
+            variant: "ghost",
+          },
         ]}
       />
     </div>
