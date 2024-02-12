@@ -56,19 +56,19 @@ export default function SideNavbar({}: Props) {
           {
             title: "Add-App",
             href: "/users",
-            icon: IoMdAddCircleOutline,
+            icon: LayoutDashboard,
             variant: "ghost"
           },
           {
             title: "App-List",
             href: "/orders",
-            icon: CiBoxList,
+            icon: LayoutDashboard,
             variant: "ghost"
           },
           {
             title: "Advertisement",
             href: "/settings",
-            icon: RiAdvertisementLine,
+            icon: Settings,
             variant: "ghost"
           }
           ,
