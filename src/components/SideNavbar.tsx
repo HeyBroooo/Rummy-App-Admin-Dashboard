@@ -9,12 +9,13 @@ type Props = {};
 import {
   LayoutDashboard,
   Settings,
-  ChevronRight
+  PlusCircle,
+  List,
+  ChevronRight,
+  Megaphone,
 } from "lucide-react";
 import { Button } from "./ui/button";
-import { IoMdAddCircleOutline } from "react-icons/io";
-import { CiBoxList } from "react-icons/ci";
-import { RiAdvertisementLine } from "react-icons/ri";
+
 
 
 
@@ -56,19 +57,19 @@ export default function SideNavbar({}: Props) {
           {
             title: "Add-App",
             href: "/users",
-            icon: LayoutDashboard,
+            icon: PlusCircle,
             variant: "ghost"
           },
           {
             title: "App-List",
             href: "/orders",
-            icon: LayoutDashboard,
+            icon: List,
             variant: "ghost"
           },
           {
             title: "Advertisement",
             href: "/settings",
-            icon: Settings,
+            icon: Megaphone,
             variant: "ghost"
           }
           ,
