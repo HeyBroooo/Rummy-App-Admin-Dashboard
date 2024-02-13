@@ -6,6 +6,7 @@ import { getStorage } from "firebase/storage";
 const firebaseConfig = {
   apiKey: "AIzaSyAT61rURxuz635pqSEm6RRoOpiD3XYrePI",
   authDomain: "rummy-app-dashboard.firebaseapp.com",
+  databaseURL: "https://rummy-app-dashboard-default-rtdb.firebaseio.com",
   projectId: "rummy-app-dashboard",
   storageBucket: "rummy-app-dashboard.appspot.com",
   messagingSenderId: "1013127666231",
