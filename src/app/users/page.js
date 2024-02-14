@@ -3,21 +3,20 @@ import React, { useState } from 'react';
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../firebase/firebase";
 import { SendToFirebase } from "../firebase/function";
+import {Button} from "@nextui-org/react";
 
 const UsersPage = () => {
   const [formdata, setformdata] = useState({
     Name: "",
     Tittle: "",
     Image: null,
-    gameType: "contest-game",
+    gameType: "New-App",
     Description: "",
     Keywords: "",
-    Link1: "",
-    Link2: "",
-    Keywords2: "",
-    Tittle1: "",
-    Tittle2: "",
-    Tittle3: ""
+    Bonus: "",
+    Withdrawal: "",
+    Downloads: "",
+    isRanked: 0,
   });
 
   const onSubmit = (event) => {
@@ -40,12 +39,10 @@ const UsersPage = () => {
             Description: formdata.Description,
             Keywords: formdata.Keywords,
             Image: ImageUrl,
-            Link1: formdata.Link1,
-            Link2: formdata.Link2,
-            Keywords2: formdata.Keywords2,
-            Tittle1: formdata.Tittle1,
-            Tittle2: formdata.Tittle2,
-            Tittle3: formdata.Tittle3
+            Bonus: formdata.Bonus,
+            Withdrawal: formdata.Withdrawal,
+            Downloads: formdata.Downloads,
+            isRanked: 0,
           };
 
           console.log("New Data:", newData);
@@ -76,7 +73,7 @@ const UsersPage = () => {
               }
               type="text"
               placeholder="Enter Game Name"
-              className="p-2 rounded-md bg-gray-200"
+              className="p-2 rounded-md border-2 border-gray-200"
             />
             <input
               onChange={(e) =>
@@ -84,7 +81,7 @@ const UsersPage = () => {
               }
               type="text"
               placeholder="Enter Game Tittle"
-              className="p-2 mt-2 rounded-md bg-gray-200"
+              className="p-2 mt-2 rounded-md border-2 border-gray-200"
             />
             <input
               onChange={(e) =>
@@ -92,7 +89,7 @@ const UsersPage = () => {
               }
               type="text"
               placeholder="Enter Game Description"
-              className="p-2 mt-2 rounded-md bg-gray-200"
+              className="p-2 mt-2 rounded-md border-2 border-gray-200"
             />
             <input
               onChange={(e) =>
@@ -100,36 +97,48 @@ const UsersPage = () => {
               }
               type="text"
               placeholder="Enter Game Keywords"
-              className="p-2 mt-2 rounded-md bg-gray-200"
+              className="p-2 mt-2 rounded-md border-2 border-gray-200"
             />
           </div>
           <div className="flex flex-col">
-            <label className="text-gray-800 font-semibold text-xl">Links</label>
+            <label className="text-gray-800 font-semibold text-xl">Extra Data</label>
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Link1: e.target.value })
+                setformdata({ ...formdata, Bonus: e.target.value })
               }
               type="text"
-              placeholder="Enter Link 1"
-              className="p-2 rounded-md bg-gray-200"
+              placeholder="Enter Bonus Amount"
+              className="p-2 rounded-md border-2 border-gray-200"
             />
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Link2: e.target.value })
+                setformdata({ ...formdata, Withdrawal: e.target.value })
               }
               type="text"
-              placeholder="Enter Link 2"
-              className="p-2 mt-2 rounded-md bg-gray-200"
+              placeholder="Enter Withdrawal Amount" 
+              className="p-2 mt-2 rounded-md border-2 border-gray-200"
             />
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Keywords2: e.target.value })
+                setformdata({ ...formdata, Downloads: e.target.value })
               }
               type="text"
-              placeholder="Enter Game Keywords"
-              className="p-2 mt-2 rounded-md bg-gray-200"
+              placeholder="Enter Total Downloads"
+              className="p-2 mt-2 rounded-md border-2 border-gray-200"
             />
           </div>
+
+          <div className="flex flex-col">
+        <label className="text-gray-800 font-semibold text-xl">Game Image</label>
+        <input
+          type="file"
+          accept="image/*"
+          className="p-2 rounded-md border-2 border-gray-200 outline-none appearance-none  transition-all duration-300 ease-in-out mt-2"
+          onChange={(e) => setformdata({ ...formdata, Image: e.target.files[0] })}
+        />
+      </div>
+{/* 
+
           <div className="flex flex-col">
             <label className="text-gray-800 font-semibold text-xl">Other Tittle</label>
             <input
@@ -138,7 +147,7 @@ const UsersPage = () => {
               }
               type="text"
               placeholder="Tittle 1"
-              className="p-2 rounded-md bg-gray-200"
+              className="p-2 rounded-md border-2 border-gray-200"
             />
             <input
               onChange={(e) =>
@@ -146,7 +155,7 @@ const UsersPage = () => {
               }
               type="text"
               placeholder="Tittle 2"
-              className="p-2 mt-2 rounded-md bg-gray-200"
+              className="p-2 mt-2 rounded-md border-2 border-gray-200"
             />
             <input
               onChange={(e) =>
@@ -154,9 +163,9 @@ const UsersPage = () => {
               }
               type="text"
               placeholder="Tittle 3"
-              className="p-2 mt-2 rounded-md bg-gray-200"
+              className="p-2 mt-2 rounded-md border-2 border-gray-200"
             />
-          </div>
+          </div> */}
           <div className="flex flex-col">
             <label className="text-gray-800 font-semibold text-xl">Game Type</label>
             <select
@@ -165,7 +174,7 @@ const UsersPage = () => {
               onChange={(e) =>
                 setformdata({ ...formdata, gameType: e.target.value })
               }
-              className="p-2 rounded-md bg-gray-200"
+              className="p-2 rounded-md border-2 border-gray-200"
             >
               <option value="Best-For-All">Best-For-All</option>
               <option value="New-App">New-App</option>
@@ -173,12 +182,11 @@ const UsersPage = () => {
             </select>
           </div>
           <div className="flex flex-col">
-            <button
-              type="submit"
-              className="bg-green-500 text-white py-2 rounded-md hover:bg-green-600 cursor-pointer"
-            >
-              Add Contest
-            </button>
+          <Button
+           type='submit' 
+          color="success">
+        Success
+      </Button> 
           </div>
         </form>
   );
