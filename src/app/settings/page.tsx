@@ -28,7 +28,10 @@ export default function SettingsPage() {
       const imageUrl = await uploadImageToStorage();
 
       // Add document with form data and image URL
+      const id = Date.now();
       await addDoc(adsCollection, {
+        id: id,
+        Date: Date.now(),
         Name: formData.Name,
         Title: formData.Title,
         Image: imageUrl,
