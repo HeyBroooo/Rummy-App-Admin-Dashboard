@@ -1,20 +1,23 @@
 "use client";
-import React, { useState } from "react";
-import { Switch } from "@/components/ui/switch";
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/firebase";
-import { SendToFirebase } from "../firebase/function";
-import { addDoc, collection } from "firebase/firestore";
+
+interface FormData {
+  Name: string;
+  Title: string;
+  Image: File | null;
+}
 
 export default function SettingsPage() {
-
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<FormData>({
     Name: "",
     Title: "",
     Image: null,
   });
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     try {
@@ -35,7 +38,7 @@ export default function SettingsPage() {
       // Clear the form after successful submission
       setFormData({ Name: "", Title: "", Image: null });
     } catch (error) {
-      console.error("Error sending data to Firebase:", error.message);
+      console.error("Error sending data to Firebase:", error);
     }
   };
 
@@ -52,12 +55,12 @@ export default function SettingsPage() {
       const imageUrl = await getDownloadURL(storageRef);
       return imageUrl;
     } catch (error) {
-      console.error("Error uploading image:", error.message);
+      console.error("Error uploading image:", error);
       throw error;
     }
   };
 
-  const handleInputChange = (e) => {
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
 
     // If the input is a file (Image input), update Image in state
