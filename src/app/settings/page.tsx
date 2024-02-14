@@ -3,6 +3,7 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../firebase/firebase";
+import {Switch} from "@nextui-org/react";
 
 interface FormData {
   Name: string;
@@ -133,6 +134,7 @@ export default function SettingsPage() {
           required
         />
       </div>
+      <Switch defaultSelected aria-label="Active"/>
 
       <div className="mt-4">
         <button
