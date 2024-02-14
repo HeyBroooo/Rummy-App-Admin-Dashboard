@@ -8,52 +8,54 @@ import { addDoc, collection } from "firebase/firestore";
 
 export default function SettingsPage() {
 
-  const [formdata, setFormData] = useState({
+  const [formData, setFormData] = useState({
     Name: "",
-    Tittle: "",
+    Title: "",
     Image: null,
   });
 
-  const onSubmit = async (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
 
     try {
-      const adsCollection = collection(db, "advertisment");
+      // Create a collection reference
+      const adsCollection = collection(db, "advertisements");
 
       // Upload the image to storage and get the URL
-      const imageRef = await uploadImageToStorage();
+      const imageUrl = await uploadImageToStorage();
 
       // Add document with form data and image URL
       await addDoc(adsCollection, {
-        Name: formdata.Name,
-        Tittle: formdata.Tittle,
-        Image: imageRef,
+        Name: formData.Name,
+        Title: formData.Title,
+        Image: imageUrl,
       });
 
       console.log("Data sent to Firebase successfully!");
+      // Clear the form after successful submission
+      setFormData({ Name: "", Title: "", Image: null });
     } catch (error) {
-      console.error("Error sending data to Firebase:", error);
+      console.error("Error sending data to Firebase:", error.message);
     }
   };
 
   const uploadImageToStorage = async () => {
     try {
-      if (!formdata.Image) {
+      if (!formData.Image) {
         throw new Error("No image selected");
       }
-  
-      const storageRef = ref(storage, `Images/${formdata.Image.name}`);
-      await uploadBytes(storageRef, formdata.Image);
-  
+
+      const storageRef = ref(storage, `Images/${formData.Image.name}`);
+      await uploadBytes(storageRef, formData.Image);
+
       // Get the download URL
       const imageUrl = await getDownloadURL(storageRef);
       return imageUrl;
     } catch (error) {
-      console.error("Error uploading image:", error);
+      console.error("Error uploading image:", error.message);
       throw error;
     }
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value, files } = e.target;
@@ -73,47 +75,55 @@ export default function SettingsPage() {
     }
   };
 
-
-
-
   return (
-    <form onSubmit={onSubmit} className="space-y-4">
-      <h2 className="text-xl font-bold mb-2">Main</h2>
-      <div className="border rounded-lg border-gray-400">
-        <label className="sr-only">App-Name</label>
-        <input
-                      onChange={handleInputChange}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <h2 className="text-xl font-bold mb-2">Add Advertisement</h2>
 
-          className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
-          placeholder="Name"
+      <div className="border rounded-lg border-gray-400">
+        <label htmlFor="name" className="sr-only">
+          Name
+        </label>
+        <input
           type="text"
           id="name"
+          name="Name"
+          value={formData.Name}
+          onChange={handleInputChange}
+          className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+          placeholder="Name"
+          required
         />
       </div>
 
       <div className="border rounded-lg border-gray-400">
-        <label className="sr-only">App-Title</label>
+        <label htmlFor="title" className="sr-only">
+          Title
+        </label>
         <input
-           onChange={handleInputChange}
-          className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
-          placeholder="Title"
           type="text"
           id="title"
+          name="Title"
+          value={formData.Title}
+          onChange={handleInputChange}
+          className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+          placeholder="Title"
+          required
         />
       </div>
 
       <div className="border rounded-lg border-gray-400">
-        <label className="sr-only">Image 1</label>
+        <label htmlFor="image" className="sr-only">
+          Image
+        </label>
         <input
-          className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
           type="file"
-          id="image1"
-          onChange={handleInputChange}        />
-      </div>
-
-      <div className="flex items-center space-x-2">
-        <Switch id="AD-Active" />
-        <label htmlFor="AD-Active">AD Active</label>
+          id="image"
+          name="Image"
+          onChange={handleInputChange}
+          accept="image/*"
+          className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+          required
+        />
       </div>
 
       <div className="mt-4">
@@ -121,7 +131,7 @@ export default function SettingsPage() {
           type="submit"
           className="inline-block w-full rounded-lg bg-black px-5 py-3 font-medium text-white sm:w-auto"
         >
-          Add Advertisment
+          Add Advertisement
         </button>
       </div>
     </form>
