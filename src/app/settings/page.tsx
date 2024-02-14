@@ -24,11 +24,13 @@ export default function SettingsPage() {
       // Create a collection reference
       const adsCollection = collection(db, "advertisements");
 
+      const id = Date.now();
+
       // Upload the image to storage and get the URL
       const imageUrl = await uploadImageToStorage();
 
       // Add document with form data and image URL
-      const id = Date.now();
+      
       await addDoc(adsCollection, {
         id: id,
         Date: Date.now(),
