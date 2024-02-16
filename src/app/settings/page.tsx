@@ -22,15 +22,12 @@ export default function SettingsPage() {
     event.preventDefault();
 
     try {
-      // Create a collection reference
       const adsCollection = collection(db, "advertisements");
 
       const id = Date.now();
 
-      // Upload the image to storage and get the URL
       const imageUrl = await uploadImageToStorage();
 
-      // Add document with form data and image URL
       
       await addDoc(adsCollection, {
         id: id,
@@ -41,7 +38,6 @@ export default function SettingsPage() {
       });
 
       console.log("Data sent to Firebase successfully!");
-      // Clear the form after successful submission
       setFormData({ Name: "", Title: "", Image: null });
     } catch (error) {
       console.error("Error sending data to Firebase:", error);
