@@ -15,3 +15,16 @@ export async function SendToFirebase(gameType, body,id) {
     throw error;
   }
 }
+
+export const GetAllGames = async () => {
+  const collectionNames = ["Best-App-collection", "New-App-collection", "Fraud-App-collection", "advertisements", "Best-For-All-collection"];
+
+  const dataArrays = await Promise.all(collectionNames.map(async (collectionName) => {
+    const querySnapshot = await getDocs(collection(db, collectionName));
+    return querySnapshot.docs.map((doc) => doc.data());
+  }));
+
+  const dataArray = dataArrays.flat();
+
+  return dataArray;
+};

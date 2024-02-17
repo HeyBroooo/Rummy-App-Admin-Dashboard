@@ -74,6 +74,12 @@ export default function SideNavbar({}: Props) {
             icon: Settings,
             variant: "ghost",
           },
+          {
+            title: "Ranking-Settings",
+            href: "/ranking",
+            icon: Settings,
+            variant: "ghost",
+          },
         ]}
       />
     </div>

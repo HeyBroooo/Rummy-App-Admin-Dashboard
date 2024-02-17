@@ -176,9 +176,9 @@ const UsersPage = () => {
               }
               className="p-2 rounded-md border-2 border-gray-200"
             >
-              <option value="Best-For-All">Best-For-All</option>
+              <option value="Best-For-All">Best-App</option>
               <option value="New-App">New-App</option>
-              <option value="Fraud-App">Fraud-App</option>
+              <option value="Fraud-App">All-App</option>
             </select>
           </div>
           <div className="flex flex-col">
