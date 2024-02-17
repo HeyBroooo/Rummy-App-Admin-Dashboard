@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { Card, CardHeader, CardBody, CardFooter } from "@nextui-org/react";
-import Image from 'next/image';
-import { GetAllGames } from '../firebase/function';
-import { collection, doc, getDoc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../firebase/firebase';
+import Image from "next/image";
+import { GetAllGames } from "../firebase/function";
+import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db } from "../firebase/firebase";
 
 export default function Ranking() {
   const [gamesData, setGamesData] = useState([]);
@@ -25,51 +25,59 @@ export default function Ranking() {
     fetchData();
   }, []);
 
-  const collectionNames = ["Best-For-All-collection", "Best-App-collection", "New-App-collection", "All-App-collection"];
-
+  const collectionNames = [
+    "Best-For-All-collection",
+    "Best-App-collection",
+    "New-App-collection",
+    "All-App-collection",
+  ];
 
   const updateRank = async (gameId, rank) => {
     try {
       const gameIdString = String(gameId);
-  
+
       for (const collectionName of collectionNames) {
         const docRef = doc(db, collectionName, gameIdString);
         const docSnap = await getDoc(docRef);
-  
+
         if (docSnap.exists()) {
           await updateDoc(docRef, { isRanked: rank });
-          console.log(`Game with ID ${gameIdString} in collection ${collectionName} ranked successfully!`);
+          console.log(
+            `Game with ID ${gameIdString} in collection ${collectionName} ranked successfully!`
+          );
         } else {
-          console.log(`Game with ID ${gameIdString} in collection ${collectionName} created and ranked successfully!`);
+          console.log(
+            `Game with ID ${gameIdString} in collection ${collectionName} created and ranked successfully!`
+          );
         }
       }
     } catch (error) {
       console.error(`Error updating game with ID ${gameId}:`, error);
     }
   };
-  
-  
-  
 
   const resetRank = async (gameId) => {
     await updateRank(gameId, 0);
   };
 
   if (loading) {
-    return <p>Loading...</p>; 
+    return <p>Loading...</p>;
   }
 
   return (
     <>
       {gamesData.map((value, index) => (
-        <div className="bg-white p-6 rounded-lg shadow-md relative" key={index}>
+        <div
+          className="bg-gray-500 p-6 rounded-lg shadow-md relative"
+          key={index}
+        >
           <div className="mb-4">
             <img
               src={value.Image}
               alt={value.uid}
               className="w-16 h-16 rounded-full"
             />
-            <p className="text-xl font-semibold">Bonus{value.Bonus}</p>
+            <p className="text-xl font-semibold">{value.Bonus}</p>
           </div>
 
           <div className="mb-4">

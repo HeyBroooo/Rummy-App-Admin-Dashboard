@@ -13,6 +13,7 @@ import {
   List,
   ChevronRight,
   Megaphone,
+  Move3D,
 } from "lucide-react";
 import { Button } from "./ui/button";
 
@@ -75,9 +76,9 @@ export default function SideNavbar({}: Props) {
             variant: "ghost",
           },
           {
-            title: "Ranking-Settings",
+            title: "Ranking-Apps",
             href: "/ranking",
-            icon: Settings,
+            icon: Move3D,
             variant: "ghost",
           },
         ]}
