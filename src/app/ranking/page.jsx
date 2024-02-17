@@ -13,11 +13,12 @@ import starImage from '../../../public/Rank3.jpg';
 export default function Ranking() {
   const [gamesData, setGamesData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [buttonDisabledState, setButtonDisabledState] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await GetAllGames();
+        const data = await GetAllGames("All-Apps-collection");
         setGamesData(data);
         setLoading(false);
       } catch (error) {
@@ -29,32 +30,24 @@ export default function Ranking() {
     fetchData();
   }, []);
 
-  const collectionNames = [
-    "Best-For-All-collection",
-    "Best-App-collection",
-    "New-App-collection",
-    "All-App-collection",
-  ];
-
   const updateRank = async (gameId, rank) => {
     try {
       const gameIdString = String(gameId);
+      const updatedButtonDisabledState = { ...buttonDisabledState };
 
-      for (const collectionName of collectionNames) {
-        const docRef = doc(db, collectionName, gameIdString);
-        const docSnap = await getDoc(docRef);
+      const docRef = doc(db, "All-Apps-collection", gameIdString);
+      const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          await updateDoc(docRef, { isRanked: rank });
-          console.log(
-            `Game with ID ${gameIdString} in collection ${collectionName} ranked successfully!`
-          );
-        } else {
-          console.log(
-            `Game with ID ${gameIdString} in collection ${collectionName} created and ranked successfully!`
-          );
-        }
+      if (docSnap.exists()) {
+        await updateDoc(docRef, { isRanked: rank });
+        updatedButtonDisabledState[gameId] = true;
+        console.log(`Game with ID ${gameIdString} ranked successfully!`);
+      } else {
+        console.log(`Game with ID ${gameIdString} not found in the collection`);
       }
+
+      setButtonDisabledState(updatedButtonDisabledState);
+      console.log("Button Disabled State:", updatedButtonDisabledState);
     } catch (error) {
       console.error(`Error updating game with ID ${gameId}:`, error);
     }
@@ -69,11 +62,11 @@ export default function Ranking() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto max-w-screen-xl">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto max-w-screen-xl mt-2">
       {gamesData.map((value, index) => (
         <div
           key={index}
-          className="bg-gray-500 p-4 rounded-lg shadow-md relative transition duration-300 transform hover:scale-105"
+          className=" p-4 rounded-lg shadow-md relative transition duration-300 transform hover:scale-105"
         >
           <div className="mb-2 mt-1 text-center">
             <img
@@ -85,39 +78,42 @@ export default function Ranking() {
             />
             <p className="text-lg font-semibold mt-2">{value.Bonus}</p>
           </div>
-  
+
           <div className="mb-2 text-center">
             <p className="text-lg font-semibold">{value.Name}</p>
             {value.id && (
               <p className="text-sm text-gray-500">ID: {value.id}</p>
             )}
           </div>
-  
+
           <div className="grid grid-cols-2 gap-2 mt-2">
             <Button
               color="success"
               variant="bordered"
               onClick={() => updateRank(value.id, 1)}
+              disabled={buttonDisabledState[value.id]}
             >
               Rank 1
             </Button>
-  
+
             <Button
               color="primary"
               variant="bordered"
               onClick={() => updateRank(value.id, 2)}
+              disabled={buttonDisabledState[value.id]}
             >
               Rank 2
             </Button>
-  
+
             <Button
               color="warning"
               variant="bordered"
               onClick={() => updateRank(value.id, 3)}
+              disabled={buttonDisabledState[value.id]}
             >
               Rank 3
             </Button>
-  
+
             <Button
               color="danger"
               variant="bordered"
@@ -126,7 +122,7 @@ export default function Ranking() {
               Reset
             </Button>
           </div>
-  
+
           <div className="flex items-center justify-between mt-2 text-center">
             {value.isRanked === 1 && (
               <Image src={trophyImage} alt="Trophy" className="w-8 h-8 mx-auto" />

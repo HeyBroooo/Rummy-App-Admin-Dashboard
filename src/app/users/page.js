@@ -10,7 +10,6 @@ const UsersPage = () => {
     Name: "",
     Tittle: "",
     Image: null,
-    gameType: "New-App",
     Description: "",
     Keywords: "",
     Bonus: "",
@@ -19,46 +18,45 @@ const UsersPage = () => {
     isRanked: 0,
   });
 
-  const onSubmit = (event) => {
+  const onSubmit = async (event) => {
     event.preventDefault();
     console.log("Image:", formdata.Image);
-    if (formdata.Image) {
-      const storageRef = ref(
-        storage,
-        `Images/${formdata.gameType}/${formdata.Image.name}`
-      );
-      uploadBytes(storageRef, formdata.Image)
-        .then(() => getDownloadURL(storageRef))
-        .then((ImageUrl) => {
-          const id = Date.now();
-          const newData = {
-            id: id,
-            Date: Date.now(),
-            Name: formdata.Name,
-            Tittle: formdata.Tittle,
-            Description: formdata.Description,
-            Keywords: formdata.Keywords,
-            Image: ImageUrl,
-            Bonus: formdata.Bonus,
-            Withdrawal: formdata.Withdrawal,
-            Downloads: formdata.Downloads,
-            isRanked: 0,
-          };
 
-          console.log("New Data:", newData);
-          SendToFirebase(formdata.gameType, newData, id)
-            .then((res) => {
-              console.log("Sent to Firebase:", res);
-            })
-            .catch((error) => {
-              console.log("Error sending data to Firebase:", error);
-            });
-        })
-        .catch((error) => {
-          console.log("Error uploading Image:", error);
-        });
-    } else {
-      console.log("No Image selected");
+    try {
+      if (formdata.Image) {
+        const storageRef = ref(storage, `Images/All-Apps/${formdata.Image.name}`);
+        const uploadedImageSnapshot = await uploadBytes(storageRef, formdata.Image);
+        const ImageUrl = await getDownloadURL(uploadedImageSnapshot.ref);
+
+        const id = Date.now();
+
+        const istTime = new Date().toLocaleString("en-US", { timeZone: "Asia/Kolkata" });
+
+
+
+        const newData = {
+          id: id,
+          Date: istTime,
+          Name: formdata.Name,
+          Tittle: formdata.Tittle,
+          Description: formdata.Description,
+          Keywords: formdata.Keywords,
+          Image: ImageUrl,
+          Bonus: formdata.Bonus,
+          Withdrawal: formdata.Withdrawal,
+          Downloads: formdata.Downloads,
+          isRanked: 0,
+          isBest: true,  
+        };
+
+        console.log("New Data:", newData);
+        await SendToFirebase("All-Apps", newData, id);
+        console.log("Sent to Firebase successfully!");
+      } else {
+        console.log("No Image selected");
+      }
+    } catch (error) {
+      console.error("Error processing form data:", error);
     }
   };
 
@@ -137,50 +135,8 @@ const UsersPage = () => {
           onChange={(e) => setformdata({ ...formdata, Image: e.target.files[0] })}
         />
       </div>
-{/* 
 
-          <div className="flex flex-col">
-            <label className="text-gray-800 font-semibold text-xl">Other Tittle</label>
-            <input
-              onChange={(e) =>
-                setformdata({ ...formdata, Tittle1: e.target.value })
-              }
-              type="text"
-              placeholder="Tittle 1"
-              className="p-2 rounded-md border-2 border-gray-200"
-            />
-            <input
-              onChange={(e) =>
-                setformdata({ ...formdata, Tittle2: e.target.value })
-              }
-              type="text"
-              placeholder="Tittle 2"
-              className="p-2 mt-2 rounded-md border-2 border-gray-200"
-            />
-            <input
-              onChange={(e) =>
-                setformdata({ ...formdata, Tittle3: e.target.value })
-              }
-              type="text"
-              placeholder="Tittle 3"
-              className="p-2 mt-2 rounded-md border-2 border-gray-200"
-            />
-          </div> */}
-          <div className="flex flex-col">
-            <label className="text-gray-800 font-semibold text-xl">Game Type</label>
-            <select
-              id="gameType"
-              value={formdata.gameType}
-              onChange={(e) =>
-                setformdata({ ...formdata, gameType: e.target.value })
-              }
-              className="p-2 rounded-md border-2 border-gray-200"
-            >
-              <option value="Best-For-All">Best-App</option>
-              <option value="New-App">New-App</option>
-              <option value="Fraud-App">All-App</option>
-            </select>
-          </div>
+         
           <div className="flex flex-col">
           <Button
            type='submit' 
