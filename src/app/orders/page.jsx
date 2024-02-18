@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { GetAllGames, updateGame } from "../firebase/function";
+import {Button} from "@nextui-org/react";
 
 export default function Orders() {
   const [gamesData, setGamesData] = useState([]);
@@ -94,20 +95,20 @@ export default function Orders() {
                       {value.Downloads}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      <button
+                      <Button
+                        color="success" variant="bordered"
                         onClick={() => handleMakeBestApp(value.id)}
-                        className="text-white bg-green-500 hover:bg-green-700 rounded-md px-3 py-1"
                       >
                         Make Best App
-                      </button>
+                      </Button>
                     </td>
                     <td className="border border-gray-300 p-2">
-                      <button
+                      <Button
+                        color="danger"  variant="bordered"
                         onClick={() => RemoveBest(value.id)}
-                        className="text-white bg-red-500 hover:bg-red-700 rounded-md px-3 py-1"
                       >
                         Undo Best App
-                      </button>
+                      </Button>
                     </td>
                   </tr>
                 ))}
