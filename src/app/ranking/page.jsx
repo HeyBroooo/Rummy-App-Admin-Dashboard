@@ -1,14 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Card, CardHeader, CardBody, CardFooter, Button } from "@nextui-org/react";
+import { Card, Button } from "@nextui-org/react";
 import Image from "next/image";
 import { GetAllGames } from "../firebase/function";
-import { collection, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
 import trophyImage from '../../../public/Rank1.jpg';
 import medalImage from '../../../public/Rank2.jpg';
 import starImage from '../../../public/Rank3.jpg';
-
 
 export default function Ranking() {
   const [gamesData, setGamesData] = useState([]);
@@ -62,18 +61,18 @@ export default function Ranking() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mx-auto max-w-screen-xl mt-2">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4">
       {gamesData.map((value, index) => (
-        <div
+        <Card
           key={index}
-          className=" p-4 rounded-lg shadow-md relative transition duration-300 transform hover:scale-105"
+          className="transition duration-300 transform hover:scale-105"
         >
           <div className="mb-2 mt-1 text-center">
             <img
               src={value.Image}
               alt={value.uid}
-              height={100}
-              width={100}
+              height={80}
+              width={80}
               className="w-20 h-20 rounded-full mx-auto object-cover"
             />
             <p className="text-lg font-semibold mt-2">{value.Bonus}</p>
@@ -135,7 +134,7 @@ export default function Ranking() {
             )}
             {value.isRanked === 0 && <p className="text-sm">Not Ranked</p>}
           </div>
-        </div>
+        </Card>
       ))}
     </div>
   );
