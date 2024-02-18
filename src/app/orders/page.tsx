@@ -1,89 +1,100 @@
 "use client";
-import React from "react";
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Chip, Tooltip, ChipProps, getKeyValue} from "@nextui-org/react";
-import {EditIcon} from "../EditIcon";
-import {DeleteIcon} from "../DeleteIcon";
-import {EyeIcon} from "../EyeIcon";
-import {columns, users} from "../data";
+import React, { useEffect, useState } from "react";
+import { GetAllGames,  updateGame } from "../firebase/function";
 
-const statusColorMap: Record<string, ChipProps["color"]>  = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
+export default function Orders() {
+  const [gamesData, setGamesData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
-
-type User = typeof users[0];
-
-export default function OrdersPage() {
-  const renderCell = React.useCallback((user: User, columnKey: React.Key) => {
-    const cellValue = user[columnKey as keyof User];
-
-    switch (columnKey) {
-      case "name":
-        return (
-          <User
-            avatarProps={{radius: "lg", src: user.avatar}}
-            description={user.email}
-            name={cellValue}
-          >
-            {user.email}
-          </User>
-        );
-      case "role":
-        return (
-          <div className="flex flex-col">
-            <p className="text-bold text-sm capitalize">{cellValue}</p>
-            <p className="text-bold text-sm capitalize text-default-400">{user.team}</p>
-          </div>
-        );
-      case "status":
-        return (
-          <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-            {cellValue}
-          </Chip>
-        );
-      case "actions":
-        return (
-          <div className="relative flex items-center gap-2">
-            <Tooltip content="Details">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EyeIcon />
-              </span>
-            </Tooltip>
-            <Tooltip content="Edit user">
-              <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-                <EditIcon />
-              </span>
-            </Tooltip>
-            <Tooltip color="danger" content="Delete user">
-              <span className="text-lg text-danger cursor-pointer active:opacity-50">
-                <DeleteIcon />
-              </span>
-            </Tooltip>
-          </div>
-        );
-      default:
-        return cellValue;
-    }
+  useEffect(() => {
+    GetAllGames().then((data) => {
+      setGamesData(data);
+      console.log(data);
+      setLoading(false);
+    });
   }, []);
 
+  const handleMakeBestApp = async (gameId) => {
+    try {
+      // Update locally
+      const updatedGames = gamesData.map((game) =>
+        game.id === gameId ? { ...game, isBest: true } : game
+      );
+      setGamesData(updatedGames);
+  
+      // Update in Firestore
+      await updateGame(String(gameId), { isBest: true });
+  
+      console.log("Game updated successfully");
+    } catch (error) {
+      console.error("Error making best app:", error);
+    }
+  };
+
+  const RemoveBest = async (gameId) => {
+    try {
+      // Update locally
+      const updatedGames = gamesData.map((game) =>
+        game.id === gameId ? { ...game, isBest: false } : game
+      );
+      setGamesData(updatedGames);
+  
+      // Update in Firestore
+      await updateGame(String(gameId), { isBest: false });
+  
+      console.log("Game updated successfully");
+    } catch (error) {
+      console.error("Error making best app:", error);
+    }
+  };
+
   return (
-  <Table aria-label="Example table with custom cells">
-      <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody items={users}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <main className="w-full px-4 pb-8 pt-16 bg-white md:px-8 rounded-lg shadow-md">
+      <div className="container mx-auto px-4 py-4">
+        <h1 className="text-3xl font-bold mb-6 text-center text-gray-800">Modify-Your-App</h1>
+        <div className="overflow-x-auto">
+          <div className="max-w-full overflow-auto">
+            <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-md">
+              <thead className="bg-blue-500 text-white">
+                <tr>
+                  <th className="border border-gray-300 p-2">#</th>
+                  <th className="border border-gray-300 p-2">Game Name</th>
+                  <th className="border border-gray-300 p-2">Image</th>
+                  <th className="border border-gray-300 p-2">Ranked</th>
+                  <th className="border border-gray-300 p-2">Best Game</th>
+                  <th className="border border-gray-300 p-2">Downloads</th>
+                  <th className="border border-gray-300 p-2">Actions</th>
+                  <th className="border border-gray-300 p-2">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {gamesData.map((value, index) => (
+                  <tr key={index} className={(index % 2 === 0) ? "bg-blue-100" : "bg-white"}>
+                    <td className="border border-gray-300 p-2">{index + 1}</td>
+                    <td className="border border-gray-300 p-2">{value.Name}</td>
+                    <td className="border border-gray-300 p-2">
+                      <img src={value.Image} alt={value.Name} className="w-8 h-8 object-cover rounded-full" />
+                    </td>
+                    <td className="border border-gray-300 p-2">{value.isRanked}</td>
+                    <td className="border border-gray-300 p-2">{value.isBest.toString()}</td>
+                    <td className="border border-gray-300 p-2">{value.Downloads}</td>
+                    <td className="border border-gray-300 p-2">
+                      <button onClick={() => handleMakeBestApp(value.id)} className="text-white bg-green-500 hover:bg-green-700 rounded-md px-3 py-1">
+                        Make Best App
+                      </button>
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      <button onClick={() => RemoveBest(value.id)} className="text-white bg-red-500 hover:bg-red-700 rounded-md px-3 py-1">
+                        Undo Best App
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </main>
   );
 }

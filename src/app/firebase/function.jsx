@@ -1,5 +1,5 @@
 import { app } from "./firebase";
-import { getFirestore, collection, addDoc, getDocs, setDoc,doc, updateDoc, getDoc} from "firebase/firestore";
+import { getFirestore, collection, addDoc, getDocs, setDoc,doc, updateDoc, getDoc, FieldValue} from "firebase/firestore";
 
 
 const db = getFirestore(app);
@@ -28,3 +28,21 @@ export const GetAllGames = async () => {
 
   return dataArray;
 };
+
+
+
+export const updateGame = async (gameId, data) => {
+  try {
+    await updateDoc(doc(db, "All-Apps-collection", gameId), data);
+    console.log("Game updated successfully");
+  } catch (error) {
+    console.error("Error updating game in Firestore:", error);
+    throw error;
+  }
+};
+
+
+
+
+
+
