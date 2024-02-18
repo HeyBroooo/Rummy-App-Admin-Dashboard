@@ -20,69 +20,80 @@ import { Button } from "./ui/button";
 import { useWindowWidth } from "@react-hook/window-size";
 
 export default function SideNavbar({}: Props) {
-  const [isCollapsed, setIsCollapsed] = useState(false);
-
   const onlyWidth = useWindowWidth();
   const mobileWidth = onlyWidth < 768;
+  const [isCollapsed, setIsCollapsed] = useState(true);
 
   function toggleSidebar() {
     setIsCollapsed(!isCollapsed);
   }
 
   return (
-    <div className="relative min-w-[80px] border-r px-3  pb-10 pt-24 ${mobileWidth ? 'hidden' : ''} ">
-      {!mobileWidth && (
-        <div className="absolute right-[-20px] top-7">
+    <div className="flex">
+      {mobileWidth && (
+        <div className="absolute top-7 left-3">
           <Button
             onClick={toggleSidebar}
             variant="secondary"
-            className=" rounded-full p-2"
+            className="rounded-full p-2"
           >
             <ChevronRight />
           </Button>
         </div>
       )}
-      <Nav
-        isCollapsed={mobileWidth ? true : isCollapsed}
-        links={[
-          {
-            title: "Dashboard",
-            href: "/",
-            icon: LayoutDashboard,
-            variant: "default",
-          },
-          {
-            title: "Add-App",
-            href: "/users",
-            icon: PlusCircle,
-            variant: "ghost",
-          },
-          {
-            title: "App-List",
-            href: "/orders",
-            icon: List,
-            variant: "ghost",
-          },
-          {
-            title: "Advertisement",
-            href: "/settings",
-            icon: Megaphone,
-            variant: "ghost",
-          },
-          {
-            title: "Site-Settings",
-            href: "/formsite",
-            icon: Settings,
-            variant: "ghost",
-          },
-          {
-            title: "Ranking-Apps",
-            href: "/ranking",
-            icon: Move3D,
-            variant: "ghost",
-          },
-        ]}
-      />
+      <div
+        className={`min-w-[80px] border-r px-3 pb-10 pt-24 ${
+          (mobileWidth && isCollapsed) ? 'hidden' : ''
+        }`}
+        style={{ flex: `0 0 ${mobileWidth && isCollapsed ? '0' : '240px'}` }}
+      >
+        <Nav
+          isCollapsed={mobileWidth ? isCollapsed : false}
+          links={[
+            {
+              title: "Dashboard",
+              href: "/",
+              icon: LayoutDashboard,
+              variant: "default",
+            },
+            {
+              title: "Add-App",
+              href: "/users",
+              icon: PlusCircle,
+              variant: "ghost",
+            },
+            {
+              title: "App-List",
+              href: "/orders",
+              icon: List,
+              variant: "ghost",
+            },
+            {
+              title: "Advertisement",
+              href: "/settings",
+              icon: Megaphone,
+              variant: "ghost",
+            },
+            {
+              title: "Site-Settings",
+              href: "/formsite",
+              icon: Settings,
+              variant: "ghost",
+            },
+            {
+              title: "Ranking-Apps",
+              href: "/ranking",
+              icon: Move3D,
+              variant: "ghost",
+            },
+          ]}
+        />
+      </div>
+      <div
+        className={`flex-grow p-6 ml-${mobileWidth && !isCollapsed ? '240' : '0'}`}
+      >
+        {/* Your main content goes here */}
+      </div>
     </div>
   );
 }

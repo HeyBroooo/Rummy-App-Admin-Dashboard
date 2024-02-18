@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.js", "src/app/firebase/function.jsx", "src/app/firebase/firebase.jsx", "src/app/users/page.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.js", "src/app/firebase/function.jsx", "src/app/firebase/firebase.jsx", "src/app/users/page.js", "src/app/orders/page.jsx"],
   "exclude": ["node_modules"]
 }
