@@ -177,7 +177,7 @@ const UsersPage = () => {
       </div>
 
       <div className="flex flex-col">
-        <Button type="submit" color="success">
+        <Button type="submit" color="success" variant="bordered">
           Success
         </Button>
       </div>
