@@ -15,12 +15,14 @@ const UsersPage = () => {
     Bonus: "",
     Withdrawal: "",
     Downloads: "",
+    BannerImage: null,
     isRanked: 0,
   });
 
   const onSubmit = async (event) => {
     event.preventDefault();
     console.log("Image:", formdata.Image);
+    console.log("BannerImage:", formdata.BannerImage); 
 
     try {
       if (formdata.Image) {
@@ -33,6 +35,21 @@ const UsersPage = () => {
           formdata.Image
         );
         const ImageUrl = await getDownloadURL(uploadedImageSnapshot.ref);
+
+         let BannerImageUrl = "";
+        if (formdata.BannerImage) {
+          const bannerStorageRef = ref(
+            storage,
+            `Images/All-Apps/Banners/${formdata.BannerImage.name}`
+          );
+          const uploadedBannerSnapshot = await uploadBytes(
+            bannerStorageRef,
+            formdata.BannerImage
+          );
+          BannerImageUrl = await getDownloadURL(
+            uploadedBannerSnapshot.ref
+          );
+        }
 
         const id = Date.now();
 
@@ -48,6 +65,7 @@ const UsersPage = () => {
           Description: formdata.Description,
           Keywords: formdata.Keywords,
           Image: ImageUrl,
+          BannerImage: BannerImageUrl,
           Bonus: formdata.Bonus,
           Withdrawal: formdata.Withdrawal,
           Downloads: formdata.Downloads,
@@ -176,6 +194,20 @@ const UsersPage = () => {
           accept="image/*"
         />
       </div>
+
+      <label className="text-gray-800 font-semibold text-xl">
+            Game Banner Image
+          </label>
+          <div className="border rounded-lg border-gray-400 mt-1">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, BannerImage: e.target.files[0] })
+              }
+              className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+              type="file"
+              accept="image/*"
+            />
+          </div>
 
       <div className="flex flex-col">
         <Button type="submit" color="success" variant="bordered" className="w-full">

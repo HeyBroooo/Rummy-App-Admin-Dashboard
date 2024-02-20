@@ -19,12 +19,12 @@ export default function Orders() {
     try {
     
       const updatedGames = gamesData.map((game) =>
-        game.id === gameId ? { ...game, isBest: true } : game
+        game.id === gameId ? { ...game, isTop: true } : game
       );
       setGamesData(updatedGames);
 
       
-      await updateGame(String(gameId), { isBest: true });
+      await updateGame(String(gameId), { isTop: true });
 
       console.log("Game updated successfully");
     } catch (error) {
@@ -36,12 +36,12 @@ export default function Orders() {
     try {
    
       const updatedGames = gamesData.map((game) =>
-        game.id === gameId ? { ...game, isBest: false } : game
+        game.id === gameId ? { ...game, isTop: false } : game
       );
       setGamesData(updatedGames);
 
       
-      await updateGame(String(gameId), { isBest: false });
+      await updateGame(String(gameId), { isTop: false });
 
       console.log("Game updated successfully");
     } catch (error) {
@@ -89,7 +89,7 @@ export default function Orders() {
                       {value.isRanked}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      {value.isBest.toString()}
+                      {value.isTop.toString()}
                     </td>
                     <td className="border border-gray-300 p-2">
                       {value.Downloads}
