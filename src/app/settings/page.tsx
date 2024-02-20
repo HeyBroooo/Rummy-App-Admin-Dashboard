@@ -81,6 +81,7 @@ export default function SettingsPage() {
   };
 
   return (
+    <div className="md::container mx-auto max-w-2xl p-4">
     <form onSubmit={handleSubmit} className="space-y-4">
       <h2 className="text-xl font-bold mb-2">Add Advertisement</h2>
 
@@ -141,5 +142,6 @@ export default function SettingsPage() {
         </button>
       </div>
     </form>
+  </div>
   );
 }

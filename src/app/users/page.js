@@ -66,7 +66,7 @@ const UsersPage = () => {
   };
 
   return (
-    <div className="md:container mx-auto max-w-2xl p-4">
+    <div className="md::container mx-auto max-w-2xl p-4">
     <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" onSubmit={onSubmit}>
       <div className="flex flex-col">
         <label className="text-gray-800 font-semibold text-xl">Game Name</label>

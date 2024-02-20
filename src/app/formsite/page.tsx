@@ -2,7 +2,7 @@ import React from 'react'
 
 export default function formsite() {
   return (
-    <div>
+    <div className="md::container mx-auto max-w-2xl p-4">
      
      <form action="#" className="space-y-4">
                 
