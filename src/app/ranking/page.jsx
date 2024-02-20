@@ -5,9 +5,9 @@ import Image from "next/image";
 import { GetAllGames } from "../firebase/function";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../firebase/firebase";
-import trophyImage from '../../../public/Rank1.jpg';
-import medalImage from '../../../public/Rank2.jpg';
-import starImage from '../../../public/Rank3.jpg';
+import trophyImage from "../../../public/Rank1.jpg";
+import medalImage from "../../../public/Rank2.jpg";
+import starImage from "../../../public/Rank3.jpg";
 
 export default function Ranking() {
   const [gamesData, setGamesData] = useState([]);
@@ -39,7 +39,13 @@ export default function Ranking() {
 
       if (docSnap.exists()) {
         await updateDoc(docRef, { isRanked: rank });
-        updatedButtonDisabledState[gameId] = true;
+        gamesData.forEach((game) => {
+          updatedButtonDisabledState[game.id] = {
+            rank1: rank === 1,
+            rank2: rank === 2,
+            rank3: rank === 3,
+          };
+        });
         console.log(`Game with ID ${gameIdString} ranked successfully!`);
       } else {
         console.log(`Game with ID ${gameIdString} not found in the collection`);
@@ -61,11 +67,12 @@ export default function Ranking() {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-4 md:flex">
+    <div className="flex flex-wrap justify-center gap-4 mt-4">
       {gamesData.map((value, index) => (
         <Card
           key={index}
           className="transition duration-300 transform hover:scale-105"
+          style={{ minWidth: "250px", maxWidth: "300px", margin: "10px" }}
         >
           <div className="mb-2 mt-1 text-center">
             <img
@@ -87,28 +94,34 @@ export default function Ranking() {
 
           <div className="grid grid-cols-2 gap-2 mt-2 md:flex">
             <Button
-              color="success"
+              color={
+                buttonDisabledState[value.id]?.rank1 ? "success" : "default"
+              }
               variant="bordered"
               onClick={() => updateRank(value.id, 1)}
-              disabled={buttonDisabledState[value.id]}
+              disabled={buttonDisabledState[value.id]?.rank1}
             >
               Rank 1
             </Button>
 
             <Button
-              color="primary"
+              color={
+                buttonDisabledState[value.id]?.rank2 ? "primary" : "default"
+              }
               variant="bordered"
               onClick={() => updateRank(value.id, 2)}
-              disabled={buttonDisabledState[value.id]}
+              disabled={buttonDisabledState[value.id]?.rank2}
             >
               Rank 2
             </Button>
 
             <Button
-              color="warning"
+              color={
+                buttonDisabledState[value.id]?.rank3 ? "warning" : "default"
+              }
               variant="bordered"
               onClick={() => updateRank(value.id, 3)}
-              disabled={buttonDisabledState[value.id]}
+              disabled={buttonDisabledState[value.id]?.rank3}
             >
               Rank 3
             </Button>
@@ -124,7 +137,11 @@ export default function Ranking() {
 
           <div className="flex items-center justify-between mt-2 text-center">
             {value.isRanked === 1 && (
-              <Image src={trophyImage} alt="Trophy" className="w-8 h-8 mx-auto" />
+              <Image
+                src={trophyImage}
+                alt="Trophy"
+                className="w-8 h-8 mx-auto"
+              />
             )}
             {value.isRanked === 2 && (
               <Image src={medalImage} alt="Medal" className="w-8 h-8 mx-auto" />
