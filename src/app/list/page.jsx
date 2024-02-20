@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import { GetAllGames, updateGame } from "../firebase/function";
 import {Button} from "@nextui-org/react";
 
-export default function Orders() {
+export default function List() {
   const [gamesData, setGamesData] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -17,13 +17,13 @@ export default function Orders() {
 
   const handleMakeBestApp = async (gameId) => {
     try {
-    
+      // Update locally
       const updatedGames = gamesData.map((game) =>
         game.id === gameId ? { ...game, isBest: true } : game
       );
       setGamesData(updatedGames);
 
-      
+      // Update in Firestore
       await updateGame(String(gameId), { isBest: true });
 
       console.log("Game updated successfully");
@@ -34,13 +34,11 @@ export default function Orders() {
 
   const RemoveBest = async (gameId) => {
     try {
-   
       const updatedGames = gamesData.map((game) =>
         game.id === gameId ? { ...game, isBest: false } : game
       );
       setGamesData(updatedGames);
 
-      
       await updateGame(String(gameId), { isBest: false });
 
       console.log("Game updated successfully");

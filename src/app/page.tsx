@@ -12,6 +12,9 @@ import {EditIcon} from "./EditIcon";
 import {DeleteIcon} from "./DeleteIcon";
 import {EyeIcon} from "./EyeIcon";
 import {columns, users} from "./data";
+import {Button} from "@nextui-org/react";
+import Orders from "./orders/page";
+
 
 const statusColorMap: Record<string, ChipProps["color"]>  = {
   active: "success",
@@ -76,11 +79,9 @@ export default function Home() {
 
           <BarChart />
         </CardContent>
-        {/* <CardContent className="flex justify-between gap-2"> */}
-          {/* <section className="w-full gap-4 gap-x-8"> */}
-            <AppList />
-          {/* </section> */}
-        {/* </CardContent> */}
+        
+            <Orders />
+         
       </section>
     </div>
   );
