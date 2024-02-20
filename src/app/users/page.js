@@ -66,10 +66,11 @@ const UsersPage = () => {
   };
 
   return (
-    <form className="grid grid-cols-1 gap-4" onSubmit={onSubmit}>
+    <div className="md:container mx-auto max-w-2xl p-4">
+    <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" onSubmit={onSubmit}>
       <div className="flex flex-col">
         <label className="text-gray-800 font-semibold text-xl">Game Name</label>
-        <div className="border rounded-lg border-gray-400">
+        <div className="border rounded-lg border-gray-400 mt-2">
           
           <input
             onChange={(e) => setformdata({ ...formdata, Name: e.target.value })}
@@ -109,7 +110,7 @@ const UsersPage = () => {
             onChange={(e) =>
               setformdata({ ...formdata, Keywords: e.target.value })
             }
-            className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+            className="w-full rounded-lg border-gray-300 p-2 text-sm focus:outline-none focus:border-black"
             placeholder="Game-Keywords"
             type="text"
             id="name"
@@ -177,11 +178,12 @@ const UsersPage = () => {
       </div>
 
       <div className="flex flex-col">
-        <Button type="submit" color="success" variant="bordered">
+        <Button type="submit" color="success" variant="bordered" className="w-full">
           Success
         </Button>
       </div>
     </form>
+    </div>
   );
 };
 
