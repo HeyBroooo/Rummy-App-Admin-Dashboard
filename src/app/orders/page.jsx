@@ -60,14 +60,14 @@ export default function Orders() {
             <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-md">
               <thead className="bg-blue-500 text-white">
                 <tr>
-                  <th className="border border-gray-300 p-2">#</th>
-                  <th className="border border-gray-300 p-2">Game Name</th>
-                  <th className="border border-gray-300 p-2">Image</th>
-                  <th className="border border-gray-300 p-2">Ranked</th>
-                  <th className="border border-gray-300 p-2">Best Game</th>
-                  <th className="border border-gray-300 p-2">Downloads</th>
-                  <th className="border border-gray-300 p-2">Actions</th>
-                  <th className="border border-gray-300 p-2">Actions</th>
+                  <th className="border border-gray-300 p-2 text-black">#</th>
+                  <th className="border border-gray-300 p-2 text-black">Game Name</th>
+                  <th className="border border-gray-300 p-2 text-black">Image</th>
+                  <th className="border border-gray-300 p-2 text-black">Ranked</th>
+                  <th className="border border-gray-300 p-2 text-black">Best Game</th>
+                  <th className="border border-gray-300 p-2 text-black">Downloads</th>
+                  <th className="border border-gray-300 p-2 text-black">Actions</th>
+                  <th className="border border-gray-300 p-2 text-black">Actions</th>
                 </tr>
               </thead>
               <tbody>

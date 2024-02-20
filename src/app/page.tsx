@@ -12,7 +12,6 @@ import {EditIcon} from "./EditIcon";
 import {DeleteIcon} from "./DeleteIcon";
 import {EyeIcon} from "./EyeIcon";
 import {columns, users} from "./data";
-import {Button} from "@nextui-org/react";
 import Orders from "./orders/page";
 
 
