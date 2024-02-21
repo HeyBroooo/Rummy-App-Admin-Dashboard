@@ -3,21 +3,14 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
-
+import Link from 'next/link';
 function Page() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
   const handleLogin = async () => {
-    console.log('Before router.push');
-    if (email === 'admin@gmail.com' && password === 'admin123') {
-      router.push('/rummy/dashboard');
-      console.log('After router.push');
-      toast.success('Login successful!');
-    } else {
-      toast.error('Invalid email or password. Please try again.');
-    }
+    
   };
   
 
@@ -64,12 +57,12 @@ function Page() {
         </div>
 
         <div>
-          <button
-            type="submit"
+          <Link href="/rummy/dashboard"
+            // type="submit"
             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
           >
             Sign in
-          </button>
+          </Link>
         </div>
       </form>
     </div>
