@@ -17,37 +17,38 @@ export default function Orders() {
 
   const handleMakeBestApp = async (gameId) => {
     try {
-    
-      const updatedGames = gamesData.map((game) =>
-        game.id === gameId ? { ...game, isTop: true } : game
-      );
-      setGamesData(updatedGames);
-
-      
+      setGamesData((prevGames) => {
+        const updatedGames = prevGames.map((game) =>
+          game.id === gameId ? { ...game, isTop: true } : game
+        );
+        return updatedGames;
+      });
+  
       await updateGame(String(gameId), { isTop: true });
-
+  
       console.log("Game updated successfully");
     } catch (error) {
       console.error("Error making best app:", error);
     }
   };
-
+  
   const RemoveBest = async (gameId) => {
     try {
-   
-      const updatedGames = gamesData.map((game) =>
-        game.id === gameId ? { ...game, isTop: false } : game
-      );
-      setGamesData(updatedGames);
-
-      
+      setGamesData((prevGames) => {
+        const updatedGames = prevGames.map((game) =>
+          game.id === gameId ? { ...game, isTop: false } : game
+        );
+        return updatedGames;
+      });
+  
       await updateGame(String(gameId), { isTop: false });
-
+  
       console.log("Game updated successfully");
     } catch (error) {
-      console.error("Error making best app:", error);
+      console.error("Error undoing best app:", error);
     }
   };
+  
 
   return (
     <main className="w-full px-4 pb-8 pt-16 bg-white md:px-8 rounded-lg shadow-md">
@@ -89,7 +90,7 @@ export default function Orders() {
                       {value.isRanked}
                     </td>
                     <td className="border border-gray-300 p-2">
-                      {value.isTop.toString()}
+                    {value.isTop !== undefined ? value.isTop.toString() : ''}
                     </td>
                     <td className="border border-gray-300 p-2">
                       {value.Downloads}
