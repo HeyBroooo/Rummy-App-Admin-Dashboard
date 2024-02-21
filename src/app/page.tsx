@@ -9,8 +9,7 @@ function Page() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
+  const handleLogin = async () => {
     console.log('Before router.push');
     if (email === 'admin@gmail.com' && password === 'admin123') {
       router.push('/rummy/dashboard');
