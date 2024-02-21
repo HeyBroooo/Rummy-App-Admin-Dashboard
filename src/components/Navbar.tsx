@@ -5,12 +5,12 @@ export default function MobileNav() {
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
 
   const menuItems = [
-    { label: "Dashboard", href: "/dashboard" },
-    { label: "Add App", href: "/users" },
-    { label: "App List", href: "/order" },
-    { label: "Advertisements", href: "/settings" },
-    { label: "Site Settings", href: "/formsite" },
-    { label: "Ranking Apps", href: "/ranking" },
+    { label: "Dashboard", href: "/rummy/dashboard" },
+    { label: "Add App", href: "/rummy/users" },
+    { label: "App List", href: "/rummy/order" },
+    { label: "Advertisements", href: "/rummy/settings" },
+    { label: "Site Settings", href: "/rummy/formsite" },
+    { label: "Ranking Apps", href: "/rummy/ranking" },
   ];
 
 
