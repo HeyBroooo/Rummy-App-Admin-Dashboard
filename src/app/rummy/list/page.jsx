@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { GetAllGames, updateGame } from "../firebase/function";
+import { GetAllGames, updateGame } from "../../firebase/function";
 import {Button} from "@nextui-org/react";
 
 export default function List() {
