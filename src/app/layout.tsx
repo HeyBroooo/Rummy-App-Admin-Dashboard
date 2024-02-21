@@ -2,9 +2,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { cn } from "../lib/utils";
-import SideNavbar from "@/components/SideNavbar";
+import { cn } from "@/lib/utils";
 import { NextUIProvider } from "@nextui-org/react";
+
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,16 +18,14 @@ export default function RootLayout({
       <NextUIProvider>
         <body
           className={cn(
-            "min-h-screen w-full bg-white text-black flex ",
+            "w-full bg-white justify-center flex items-center h-screen  ",
             inter.className,
             {
               "debug-screens": process.env.NODE_ENV === "development",
             }
           )}
         >
-          <SideNavbar />
-
-          <div className="p-8 w-full">{children}</div>
+          <div className=" items-center flex w-full">{children}</div>
         </body>
       </NextUIProvider>
     </html>

@@ -1,83 +1,80 @@
-"use client";
-import React from "react";
-import PageTitle from "@/components/PageTitle";
-import Card, { CardContent, CardProps } from "@/components/Card";
-import BarChart from "@/components/BarChart";
-import playstoreImage from "../../public/playstore.png";
-import comingsoon from "../../public/coming-soon.png";
-import advertisment from "../../public/online-advertising.png";
-import Image from "next/image";
-import {Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Chip, Tooltip, ChipProps, getKeyValue} from "@nextui-org/react";
-import Orders from "./orders/page";
+'use client'
 
+import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import toast, { Toaster } from 'react-hot-toast';
 
-const statusColorMap: Record<string, ChipProps["color"]>  = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
-};
+function Page() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const router = useRouter();
 
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    console.log('Before router.push');
+    if (email === 'admin@gmail.com' && password === 'admin123') {
+      router.push('/rummy/dashboard');
+      console.log('After router.push');
+      toast.success('Login successful!');
+    } else {
+      toast.error('Invalid email or password. Please try again.');
+    }
+  };
+  
 
-
-
-
-export default function Home() {
   return (
-
-
-    <div className="flex flex-col gap-5  w-full">
-      <PageTitle title="Dashboard" />
-      <div className="grid lg:grid-cols-5 gap-4 p-4">
-        <div className="lg:col-span-2 col-span-1 bg-white flex justify-between w-full border p-4 rounded-lg shadow-inner">
-          <div className="flex flex-col w-full pb-4">
-            <p className="text-gray-600">Apps Download</p>
-            <p className="text-2xl font-bold mt-2">50</p>
-          </div>
-
-          <p className=" flex justify-center items-center p-7 rounded-lg">
-            <Image
-              src={playstoreImage}
-              alt="Playstore"
-              width={50}
-              height={50}
+    <div className="mt-10 mx-auto w-full max-w-sm p-4">
+      <Toaster position="top-center" reverseOrder={false} />
+      <form className="space-y-6" onSubmit={handleLogin}>
+        <div>
+          <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
+            Email address
+          </label>
+          <div className="mt-2">
+            <input
+              id="email"
+              name="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="block w-full rounded-md border-1 border-gray-400 outline-none focus:border-blue-600 py-2 text-gray-900 placeholder:text-gray-400 pl-4 sm:text-sm sm:leading-6"
             />
-          </p>
-        </div>
-
-        <div className="lg:col-span-2 col-span-1 bg-white flex justify-between w-full border p-4 rounded-lg shadow-inner">
-          <div className="flex flex-col w-full pb-4">
-            <p className="text-gray-600">Category</p>
-            <p className="text-2xl font-bold mt-2">Coming Soon</p>
           </div>
-
-          <p className=" flex justify-center items-center p-7 rounded-lg">
-            <Image src={comingsoon} alt="Playstore" width={50} height={50} />
-          </p>
         </div>
 
-        <div className="lg:col-span-2 col-span-1 bg-white flex justify-between w-full border p-4 rounded-lg shadow-inner">
-          <div className="flex flex-col w-full pb-4">
-            <p className="text-gray-600">ADVERTISEMENT</p>
-            <p className="text-2xl text-red-600 font-bold mt-2">INACTIVE</p>
+        <div>
+          <div className="flex items-center justify-between">
+            <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
+              Password
+            </label>
           </div>
-
-          <p className=" flex justify-center items-center p-7 rounded-lg">
-            <Image src={advertisment} alt="Playstore" width={50} height={50} />
-          </p>
+          <div className="mt-2">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="block w-full rounded-md border-1 border-gray-400 outline-none focus:border-blue-600 py-2 text-gray-900 placeholder:text-gray-400 pl-4 sm:text-sm sm:leading-6"
+            />
+          </div>
         </div>
-      </div>
 
-      <section className="grid grid-cols-1  gap-4 transition-all lg:grid-cols-2">
-        <CardContent>
-          <p className="p-4 font-semibold">Overview</p>
-
-          <BarChart />
-        </CardContent>
-        
-            <Orders />
-         
-      </section>
+        <div>
+          <button
+            type="submit"
+            className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+          >
+            Sign in
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
 
+export default Page;

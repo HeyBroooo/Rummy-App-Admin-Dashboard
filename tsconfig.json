@@ -21,6 +21,6 @@
       "@/*": ["./src/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.js", "src/app/firebase/function.jsx", "src/app/firebase/firebase.jsx", "src/app/users/page.js", "src/app/orders/page.jsx", "src/app/settings/page.jsx"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "tailwind.config.js", "src/app/firebase/function.tsx", "src/app/firebase/firebase.ts", "src/app/rummy/users/page.js", "src/app/order/page.jsx", "src/app/rummy/settings/page.jsx", "src/app/list/page.jsx", "src/app/ranking/page.jsx"],
   "exclude": ["node_modules"]
 }

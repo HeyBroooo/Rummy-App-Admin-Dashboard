@@ -29,7 +29,7 @@ export default function SideNavbar({}: Props) {
   }
 
   return (
-    <div className="flex">
+    <div className="flex z-10">
       {mobileWidth && (
         <div className="absolute top-7 left-3">
           <Button
@@ -52,37 +52,37 @@ export default function SideNavbar({}: Props) {
           links={[
             {
               title: "Dashboard",
-              href: "/",
+              href: "/rummy/dashboard",
               icon: LayoutDashboard,
               variant: "default",
             },
             {
               title: "Add-App",
-              href: "/users",
+              href: "/rummy/users",
               icon: PlusCircle,
               variant: "ghost",
             },
             {
               title: "App-List",
-              href: "/orders",
+              href: "/rummy/order",
               icon: List,
               variant: "ghost",
             },
             {
               title: "Advertisement",
-              href: "/settings",
+              href: "/rummy/settings",
               icon: Megaphone,
               variant: "ghost",
             },
             {
               title: "Site-Settings",
-              href: "/formsite",
+              href: "/rummy/formsite",
               icon: Settings,
               variant: "ghost",
             },
             {
               title: "Ranking-Apps",
-              href: "/ranking",
+              href: "/rummy/ranking",
               icon: Move3D,
               variant: "ghost",
             },
