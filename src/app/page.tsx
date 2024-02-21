@@ -9,8 +9,18 @@ function Page() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = async () => {
-    
+  const dummyUser = {
+    email: 'rummy@gmail.com',
+    password: 'rummy1234',
+  };
+
+  const handleLogin = async (event: React.FormEvent) => {
+    event.preventDefault(); 
+    if (email === dummyUser.email && password === dummyUser.password) {
+      router.push('/rummy/dashboard');
+    } else {
+      toast.error('Invalid email or password');
+    }
   };
   
 
@@ -57,12 +67,14 @@ function Page() {
         </div>
 
         <div>
-          <Link href="/rummy/dashboard"
-            // type="submit"
+          <button 
+             type="submit"
             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-          >
+        >
             Sign in
-          </Link>
+
+          </button>
+         
         </div>
       </form>
     </div>
