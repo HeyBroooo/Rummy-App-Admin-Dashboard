@@ -58,7 +58,6 @@ export default function formsite() {
                     ></textarea>
                   </div>
   
-                  {/* Line break and Image Titles */}
                   <hr className="my-4" />
                   <h2 className="text-xl font-bold mb-2">Images</h2>
   

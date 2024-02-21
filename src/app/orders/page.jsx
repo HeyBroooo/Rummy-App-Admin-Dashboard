@@ -100,7 +100,7 @@ export default function Orders() {
                         color="success" variant="bordered"
                         onClick={() => handleMakeBestApp(value.id)}
                       >
-                        Make Best App
+                        Make Top App
                       </Button>
                     </td>
                     <td className="border border-gray-300 p-2">
@@ -108,7 +108,7 @@ export default function Orders() {
                         color="danger"  variant="bordered"
                         onClick={() => RemoveBest(value.id)}
                       >
-                        Undo Best App
+                        Undo Top App
                       </Button>
                     </td>
                   </tr>
