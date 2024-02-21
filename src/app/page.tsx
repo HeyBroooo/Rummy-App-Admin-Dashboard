@@ -9,7 +9,7 @@ function Page() {
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const handleLogin = async (e) => {
+  const handleLogin = async ({e} : any) => {
     e.preventDefault();
     console.log('Before router.push');
     if (email === 'admin@gmail.com' && password === 'admin123') {
