@@ -1,25 +1,145 @@
-import Image from 'next/image';
-import React, { useState } from 'react';
+import { db } from "@/app/firebase/firebase";
+import {
+  doc,
+  updateDoc,
+  getDoc,
+  collection,
+  getDocs,
+} from "firebase/firestore";
+import toast, { Toaster } from "react-hot-toast";
+import React, { useState, useEffect } from "react";
 
 interface CardProps {
   data: {
     Name: string;
     Bonus: string;
     Image: string;
+    id: number;
+    isRanked: number | null;
   };
 }
 
 function Card({ data }: CardProps) {
-  const [selectedRank, setSelectedRank] = useState<string | null>(null);
+  const [selectedRank, setSelectedRank] = useState<number | null>(null);
+  const [currentRanks, setCurrentRanks] = useState<{
+    [key: number]: number | null;
+  }>({});
 
-  const handleRankClick = (rank: string) => {
-    setSelectedRank(rank);
+  useEffect(() => {
+    const fetchCurrentRanks = async () => {
+      try {
+        const ranks: { [key: number]: number | null } = {};
+
+        for (let i = 1; i <= 3; i++) {
+          const docRef = doc(db, "All-Apps-collection", `Rank${i}`);
+          const docSnap = await getDoc(docRef);
+
+          ranks[i] = docSnap.exists() ? docSnap.data().gameId : null;
+        }
+
+        setCurrentRanks(ranks);
+      } catch (error) {
+        console.error("Error fetching current ranks:", error);
+      }
+    };
+
+    fetchCurrentRanks();
+  }, []);
+
+  const showToast = (message: string, type: "success" | "error") => {
+    toast[type](message);
+  };
+
+  const handleRankClick = async (rank: number) => {
+    try {
+      if (
+        data.isRanked !== null &&
+        data.isRanked !== undefined &&
+        data.isRanked !== 0
+      ) {
+        showToast(`Game with ID ${data.id} already has a rank.`, "error");
+        console.log(`Game with ID ${data.id} already has a rank.`);
+        return;
+      }
+
+      const allDocsRef = collection(db, "All-Apps-collection");
+      const allDocsSnapshot = await getDocs(allDocsRef);
+
+      const hasRank = allDocsSnapshot.docs.some((doc) => {
+        const docData = doc.data();
+        return docData.isRanked !== null && docData.isRanked === rank;
+      });
+
+      if (hasRank) {
+        showToast(`Rank ${rank} is already assigned to another game.`, "error");
+        console.log(`Rank ${rank} is already assigned to another game.`);
+        return;
+      }
+
+      const docRef = doc(db, "All-Apps-collection", data.id.toString());
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        await updateDoc(docRef, { isRanked: rank });
+        showToast(
+          `Game with ID ${data.id} ranked successfully at Rank ${rank}!`,
+          "success"
+        );
+        console.log(
+          `Game with ID ${data.id} ranked successfully at Rank ${rank}!`
+        );
+
+        setSelectedRank(rank);
+      } else {
+        showToast(
+          `Game with ID ${data.id} not found in the collection`,
+          "error"
+        );
+        console.log(`Game with ID ${data.id} not found in the collection`);
+      }
+    } catch (error) {
+      console.error(`Error updating game with ID ${data.id}:`, error);
+    }
+  };
+
+  const resetRanks = async () => {
+    try {
+      const docRef = doc(db, "All-Apps-collection", data.id.toString());
+      const docSnap = await getDoc(docRef);
+
+      if (docSnap.exists()) {
+        await updateDoc(docRef, { isRanked: 0 });
+        showToast(
+          `Ranks reset successfully for game with ID ${data.id}!`,
+          "success"
+        );
+        console.log(`Ranks reset successfully for game with ID ${data.id}!`);
+
+        setSelectedRank(null);
+
+        setCurrentRanks({ 1: null, 2: null, 3: null });
+      } else {
+        showToast(`Document with ID ${data.id} not found`, "error");
+        console.log(`Document with ID ${data.id} not found`);
+      }
+    } catch (error) {
+      console.error(
+        `Error resetting ranks for game with ID ${data.id}:`,
+        error
+      );
+    }
   };
 
   return (
     <div className="bg-white rounded-lg mt-2 overflow-hidden shadow-md p-4">
       <div className="image-container mb-4 flex w-full items-center justify-center">
-        <img src={data.Image} alt={data.Name} width={100} height={100} className='aspect-square object-cover rounded-lg' />
+        <img
+          src={data.Image}
+          alt={data.Name}
+          width={100}
+          height={100}
+          className="aspect-square object-cover rounded-lg"
+        />
       </div>
       <div className="content-container text-center">
         <div className="text-container mb-4">
@@ -27,37 +147,30 @@ function Card({ data }: CardProps) {
           <p className="text-gray-600">Bonus: {data.Bonus}</p>
         </div>
         <div className=" space-x-2">
-          <button
-            className={`rank-button text-xs ${selectedRank === 'Rank1' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}
-            onClick={() => handleRankClick('Rank1')}
-            disabled={selectedRank !== null && selectedRank !== 'Rank1'}
-          >
-            Rank 1
-          </button>
-          <button
-            className={`rank-button text-xs ${selectedRank === 'Rank2' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}
-            onClick={() => handleRankClick('Rank2')}
-            disabled={selectedRank !== null && selectedRank !== 'Rank2'}
-          >
-            Rank 2
-          </button>
-          <button
-            className={`rank-button text-xs ${selectedRank === 'Rank3' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-600'}`}
-            onClick={() => handleRankClick('Rank3')}
-            disabled={selectedRank !== null && selectedRank !== 'Rank3'}
-          >
-            Rank 3
-          </button>
+          {[1, 2, 3].map((rank) => (
+            <button
+              key={rank}
+              className={`rank-button text-xs ${
+                selectedRank === rank
+                  ? "bg-green-500 text-white"
+                  : "bg-gray-200 text-gray-600"
+              }`}
+              onClick={() => handleRankClick(rank)}
+              disabled={selectedRank !== null && selectedRank !== rank}
+            >
+              Rank {rank}
+            </button>
+          ))}
           <button
             className="reset-button text-xs bg-red-500 mt-3 text-white"
-            onClick={() => setSelectedRank(null)}
+            onClick={resetRanks}
           >
-            Reset
+            Reset Ranks
           </button>
         </div>
+        <Toaster />
       </div>
 
-      {/* Tailwind CSS styles */}
       <style jsx>{`
         .card-container {
           border: 1px solid #e2e8f0;
@@ -71,7 +184,8 @@ function Card({ data }: CardProps) {
           margin-bottom: 1rem;
         }
 
-        .rank-button, .reset-button {
+        .rank-button,
+        .reset-button {
           padding: 0.5rem 1rem;
           border-radius: 0.25rem;
           cursor: pointer;
@@ -82,7 +196,8 @@ function Card({ data }: CardProps) {
           cursor: not-allowed;
         }
 
-        .rank-button:hover, .reset-button:hover {
+        .rank-button:hover,
+        .reset-button:hover {
           filter: brightness(90%);
         }
       `}</style>

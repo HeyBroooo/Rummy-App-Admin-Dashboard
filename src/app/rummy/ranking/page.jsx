@@ -1,12 +1,9 @@
 'use client'
-
 import React, { useEffect, useState } from "react";
 import { GetAllGames } from "../../firebase/function";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "../../firebase/firebase";
 import RankingCard from "@/components/Card/Card";
-
-
 
 export default function Ranking() {
   const [gamesData, setGamesData] = useState([]);
@@ -28,7 +25,7 @@ export default function Ranking() {
     fetchData();
   }, []);
 
-  const updateRank = async (gameId , rank) => {
+  const updateRank = async (gameId, rank) => {
     try {
       const gameIdString = String(gameId);
       const updatedButtonDisabledState = { ...buttonDisabledState };
