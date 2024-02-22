@@ -91,52 +91,146 @@ const UsersPage = () => {
       <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" onSubmit={onSubmit}>
         <div className="flex flex-col">
           <label className="text-gray-800 font-semibold text-xl">Game Name</label>
-          <input
-            onChange={(e) => setFormData({ ...formData, Name: e.target.value })}
-            className="mt-1 p-3 rounded-md border focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Game Name"
-            type="text"
-            id="name"
-          />
-          {/* Repeat similar structure for other input fields */}
+          <div className="border rounded-lg border-gray-400 mt-2">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, Name: e.target.value })
+              }
+              className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+              placeholder="Game-Name"
+              type="text"
+              id="name"
+            />
+          </div>
+
+          <div className="border rounded-lg border-gray-400 mt-2">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, Tittle: e.target.value })
+              }
+              className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+              placeholder="Game-Tittle"
+              type="text"
+              id="name"
+            />
+          </div>
+
+          <div className="border rounded-lg border-gray-400 mt-2">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, Description: e.target.value })
+              }
+              className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+              placeholder="Game-Description"
+              type="text"
+              id="name"
+            />
+          </div>
+
+          <div className="border rounded-lg border-gray-400 mt-2">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, Keywords: e.target.value })
+              }
+              className="w-full rounded-lg border-gray-300 p-2 text-sm focus:outline-none focus:border-black"
+              placeholder="Game-Keywords"
+              type="text"
+              id="name"
+            />
+          </div>
         </div>
 
         <div className="flex flex-col">
-          <label className="text-gray-800 font-semibold text-xl">Extra Data</label>
-          <input
-            onChange={(e) => setFormData({ ...formData, Bonus: e.target.value })}
-            className="mt-1 p-3 rounded-md border focus:outline-none focus:ring focus:border-blue-300"
-            placeholder="Bonus Amount"
-            type="text"
-            id="bonus"
-          />
-          {/* Repeat similar structure for other input fields */}
+          <label className="text-gray-800 font-semibold text-xl">
+            Extra Data
+          </label>
+
+          <div className="border rounded-lg border-gray-400 mt-2">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, Bonus: e.target.value })
+              }
+              className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+              placeholder="Bonus-Amount"
+              type="text"
+              id="name"
+            />
+          </div>
+
+          <div className="border rounded-lg border-gray-400 mt-2">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, Withdrawal: e.target.value })
+              }
+              className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+              placeholder="Withdrawal-Amount"
+              type="text"
+              id="name"
+            />
+          </div>
+
+          <div className="border rounded-lg border-gray-400 mt-2">
+            <input
+              onChange={(e) =>
+                setformdata({ ...formdata, Downloads: e.target.value })
+              }
+              className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+              placeholder="Total-Downloads"
+              type="text"
+              id="name"
+            />
+          </div>
         </div>
 
-        <label className="text-gray-800 font-semibold text-xl">Game Image</label>
-        <input
-          onChange={(e) => setFormData({ ...formData, Image: e.target.files[0] })}
-          className="mt-1 p-3 rounded-md border focus:outline-none focus:ring focus:border-blue-300"
-          type="file"
-          accept="image/*"
-        />
+        <label className="text-gray-800 font-semibold text-xl">
+          Game Image
+        </label>
 
-        <label className="text-gray-800 font-semibold text-xl">Game Banner Image</label>
-        <input
-          onChange={(e) => setFormData({ ...formData, BannerImage: e.target.files[0] })}
-          className="mt-1 p-3 rounded-md border focus:outline-none focus:ring focus:border-blue-300"
-          type="file"
-          accept="image/*"
-        />
+        <div className="border rounded-lg border-gray-400 mt-1">
+          <input
+            onChange={(e) =>
+              setformdata({ ...formdata, Image: e.target.files[0] })
+            }
+            className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+            type="file"
+            accept="image/*"
+          />
+        </div>
+
+        <label className="text-gray-800 font-semibold text-xl">
+          Game Banner Image
+        </label>
+        <div className="border rounded-lg border-gray-400 mt-1">
+          <input
+            onChange={(e) =>
+              setformdata({ ...formdata, BannerImage: e.target.files[0] })
+            }
+            className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
+            type="file"
+            accept="image/*"
+          />
+        </div>
 
         <div className="flex items-center">
-          <Switch checked={otherApps} onChange={(e) => setOtherApps(e.target.checked)} />
-          <label className="ml-2 text-gray-800 font-thin text-sm">Other Apps</label>
+          <Switch
+            checked={otherApps}
+            onChange={(e) => setOtherApps(e.target.checked)}
+          />
+          <label className="ml-2 text-gray-800 font-thin text-sm">
+            Other Apps
+          </label>
         </div>
 
-        <Button type="submit" color="success" variant="bordered" className="w-full">
-          Add Advertisement
-        </Button>
+        <div className="flex flex-col">
+          <Button
+            type="submit"
+            color="success"
+            variant="bordered"
+            className="w-full"
+          >
+            Success
+          </Button>
+        </div>
       </form>
     </div>
   );
