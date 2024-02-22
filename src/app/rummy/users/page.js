@@ -254,7 +254,7 @@ const UsersPage = () => {
             variant="bordered"
             className="w-full"
           >
-            Success
+            Add App
           </Button>
         </div>
       </form>

@@ -5,6 +5,8 @@ import { collection, addDoc } from "firebase/firestore";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { db, storage } from "../../firebase/firebase";
 import { Switch } from "@nextui-org/react";
+import toast, { Toaster } from 'react-hot-toast';
+
 
 interface FormData {
   Name: string;
@@ -38,9 +40,11 @@ export default function SettingsPage() {
       });
 
       console.log("Data sent to Firebase successfully!");
+      toast.success('Advertisement added successfully');
       setFormData({ Name: "", Title: "", Image: null });
     } catch (error) {
       console.error("Error sending data to Firebase:", error);
+      toast.error('Error adding advertisement');
     }
   };
 
@@ -65,14 +69,12 @@ export default function SettingsPage() {
   const handleInputChange = (e: ChangeEvent<HTMLInputElement>) => {
     const { name, value, files } = e.target;
 
-    // If the input is a file (Image input), update Image in state
     if (files) {
       setFormData((prevData) => ({
         ...prevData,
         [name]: files[0],
       }));
     } else {
-      // If the input is not a file, update other fields in state
       setFormData((prevData) => ({
         ...prevData,
         [name]: value,
@@ -82,6 +84,7 @@ export default function SettingsPage() {
 
   return (
     <div className="container mx-auto max-w-xl p-4 md:mt-0 mt-10">
+      <Toaster />
       <form onSubmit={handleSubmit} className="space-y-4">
         <h2 className="text-xl font-bold mb-2">Add Advertisement</h2>
 
