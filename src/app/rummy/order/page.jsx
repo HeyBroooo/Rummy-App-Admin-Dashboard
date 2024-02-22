@@ -2,10 +2,15 @@
 import React, { useEffect, useState } from "react";
 import { GetAllGames, updateGame } from "../../firebase/function";
 import {Button} from "@nextui-org/react";
+import toast, { Toaster } from 'react-hot-toast';
+import { deleteDoc, doc } from "firebase/firestore";
+import { db } from "@/app/firebase/firebase";
+
 
 export default function Orders() {
   const [gamesData, setGamesData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [forceUpdate, setForceUpdate] = useState(0);
 
   useEffect(() => {
     GetAllGames().then((data) => {
@@ -13,7 +18,7 @@ export default function Orders() {
       console.log(data);
       setLoading(false);
     });
-  }, []);
+  }, [forceUpdate]);
 
   const handleMakeBestApp = async (gameId) => {
     try {
@@ -27,8 +32,10 @@ export default function Orders() {
       await updateGame(String(gameId), { isTop: true });
   
       console.log("Game updated successfully");
+      toast.success('App marked as Top App');
     } catch (error) {
       console.error("Error making best app:", error);
+      toast.error('Error making best app:', error);
     }
   };
   
@@ -44,22 +51,31 @@ export default function Orders() {
       await updateGame(String(gameId), { isTop: false });
   
       console.log("Game updated successfully");
+      toast.success('Removed from Top Apps');
     } catch (error) {
       console.error("Error undoing best app:", error);
+      toast.error('Error undoing best app:', error);
     }
   };
 
   const DeleteApp = async (gameId) => {
     try {
-      setGamesData((prevGames) => prevGames.filter((game) => game.id !== gameId));
+      const gameIdString = String(gameId);
 
-      await deleteDoc(doc(db, 'your_collection_name', gameId));
+      setGamesData((prevGames) => prevGames.filter((game) => game.id !== gameIdString));
 
-      console.log("Game deleted successfully");
+      await deleteDoc(doc(db, 'All-Apps-collection', gameIdString));
+
+      toast.success('App deleted successfully');
+
+      setForceUpdate((prev) => prev + 1);
     } catch (error) {
+      toast.error(`Error deleting app: ${error.message}`);
       console.error("Error deleting app:", error);
     }
   };
+  
+  
   
 
   return (
@@ -69,7 +85,9 @@ export default function Orders() {
           Modify-Your-App
         </h1>
         <div className="overflow-x-auto">
+        
           <div className="max-w-full overflow-auto">
+          <Toaster />
             <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-md">
               <thead className="bg-blue-500 text-white">
                 <tr>
@@ -79,9 +97,9 @@ export default function Orders() {
                   <th className="border border-gray-300 p-2 text-black">Ranked</th>
                   <th className="border border-gray-300 p-2 text-black">Best Game</th>
                   <th className="border border-gray-300 p-2 text-black">Downloads</th>
-                  <th className="border border-gray-300 p-2 text-black">Actions</th>
-                  <th className="border border-gray-300 p-2 text-black">Actions</th>
-                  <th className="border border-gray-300 p-2 text-black">Actions</th>
+                  <th className="border border-gray-300 p-2 text-black">Top</th>
+                  <th className="border border-gray-300 p-2 text-black">Undo</th>
+                  <th className="border border-gray-300 p-2 text-black">Delete</th>
                 </tr>
               </thead>
               <tbody>
