@@ -48,6 +48,18 @@ export default function Orders() {
       console.error("Error undoing best app:", error);
     }
   };
+
+  const DeleteApp = async (gameId) => {
+    try {
+      setGamesData((prevGames) => prevGames.filter((game) => game.id !== gameId));
+
+      await deleteDoc(doc(db, 'your_collection_name', gameId));
+
+      console.log("Game deleted successfully");
+    } catch (error) {
+      console.error("Error deleting app:", error);
+    }
+  };
   
 
   return (
@@ -67,6 +79,7 @@ export default function Orders() {
                   <th className="border border-gray-300 p-2 text-black">Ranked</th>
                   <th className="border border-gray-300 p-2 text-black">Best Game</th>
                   <th className="border border-gray-300 p-2 text-black">Downloads</th>
+                  <th className="border border-gray-300 p-2 text-black">Actions</th>
                   <th className="border border-gray-300 p-2 text-black">Actions</th>
                   <th className="border border-gray-300 p-2 text-black">Actions</th>
                 </tr>
@@ -109,6 +122,14 @@ export default function Orders() {
                         onClick={() => RemoveBest(value.id)}
                       >
                         Undo Top App
+                      </Button>
+                    </td>
+                    <td className="border border-gray-300 p-2">
+                      <Button
+                        color="danger"  variant="bordered"
+                        onClick={() => DeleteApp(value.id)}
+                      >
+                        Delete App
                       </Button>
                     </td>
                   </tr>

@@ -4,6 +4,7 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { storage } from "../../firebase/firebase";
 import { SendToFirebase } from "../../firebase/function";
 import { Button, Switch } from "@nextui-org/react";
+import toast, { Toaster } from 'react-hot-toast';
 
 const UsersPage = () => {
   const [formData, setFormData] = useState({
@@ -25,6 +26,15 @@ const UsersPage = () => {
     event.preventDefault();
 
     try {
+      // Check if required fields are not empty
+      const requiredFields = ["Name", "Title", "Description", "Keywords"];
+      for (const field of requiredFields) {
+        if (!formData[field]) {
+          throw new Error(`Please provide a value for ${field}.`);
+        }
+      }
+
+      // Upload images and other data to Firebase
       if (formData.Image) {
         const storageRef = ref(
           storage,
@@ -70,72 +80,83 @@ const UsersPage = () => {
           isRanked: 0,
         };
 
-        console.log("New Data:", newData);
-
         if (otherApps) {
           newData.OtherApps = true;
         }
 
         await SendToFirebase("All-Apps", newData, id);
-        console.log("Sent to Firebase successfully!");
-      } else {
-        console.log("No Image selected");
+        // Show success toast
+        toast.success("Data sent to Firebase successfully!");
+        console.log("Data sent to Firebase successfully!");
+          } else {
+        // Show error toast
+        toast.error("No Image selected");
       }
     } catch (error) {
       console.error("Error processing form data:", error);
+      // Show error toast
+      toast.error(`Error: ${error.message}`);
     }
   };
 
   return (
     <div className="container mx-auto max-w-2xl p-4 md:mt-0 mt-10">
-      <form className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" onSubmit={onSubmit}>
+      <Toaster />
+      <form
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"
+        onSubmit={onSubmit}
+      >
         <div className="flex flex-col">
           <label className="text-gray-800 font-semibold text-xl">Game Name</label>
           <div className="border rounded-lg border-gray-400 mt-2">
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Name: e.target.value })
+                setFormData({ ...formData, Name: e.target.value })
               }
               className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
               placeholder="Game-Name"
               type="text"
               id="name"
+              required
             />
           </div>
 
           <div className="border rounded-lg border-gray-400 mt-2">
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Tittle: e.target.value })
+                setFormData({ ...formData, Title: e.target.value })
               }
               className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
               placeholder="Game-Tittle"
               type="text"
               id="name"
+              required
             />
           </div>
 
           <div className="border rounded-lg border-gray-400 mt-2">
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Description: e.target.value })
+                setFormData({ ...formData, Description: e.target.value })
               }
               className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
               placeholder="Game-Description"
               type="text"
               id="name"
+              required
             />
           </div>
 
           <div className="border rounded-lg border-gray-400 mt-2">
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Keywords: e.target.value })
+                setFormData({ ...formData, Keywords: e.target.value })
               }
               className="w-full rounded-lg border-gray-300 p-2 text-sm focus:outline-none focus:border-black"
               placeholder="Game-Keywords"
               type="text"
               id="name"
+              required
             />
           </div>
         </div>
@@ -148,36 +169,39 @@ const UsersPage = () => {
           <div className="border rounded-lg border-gray-400 mt-2">
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Bonus: e.target.value })
+                setFormData({ ...formData, Bonus: e.target.value })
               }
               className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
               placeholder="Bonus-Amount"
               type="text"
               id="name"
+              required
             />
           </div>
 
           <div className="border rounded-lg border-gray-400 mt-2">
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Withdrawal: e.target.value })
+                setFormData({ ...formData, Withdrawal: e.target.value })
               }
               className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
               placeholder="Withdrawal-Amount"
               type="text"
               id="name"
+              required
             />
           </div>
 
           <div className="border rounded-lg border-gray-400 mt-2">
             <input
               onChange={(e) =>
-                setformdata({ ...formdata, Downloads: e.target.value })
+                setFormData({ ...formData, Downloads: e.target.value })
               }
               className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
               placeholder="Total-Downloads"
               type="text"
               id="name"
+              required
             />
           </div>
         </div>
@@ -189,11 +213,12 @@ const UsersPage = () => {
         <div className="border rounded-lg border-gray-400 mt-1">
           <input
             onChange={(e) =>
-              setformdata({ ...formdata, Image: e.target.files[0] })
+              setFormData({ ...formData, Image: e.target.files[0] })
             }
             className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
             type="file"
             accept="image/*"
+            required
           />
         </div>
 
@@ -203,11 +228,12 @@ const UsersPage = () => {
         <div className="border rounded-lg border-gray-400 mt-1">
           <input
             onChange={(e) =>
-              setformdata({ ...formdata, BannerImage: e.target.files[0] })
+              setFormData({ ...formData, BannerImage: e.target.files[0] })
             }
             className="w-full rounded-lg border-gray-300 p-3 text-sm focus:outline-none focus:border-black"
             type="file"
             accept="image/*"
+            required  
           />
         </div>
 
