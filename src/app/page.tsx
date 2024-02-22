@@ -3,26 +3,46 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import toast, { Toaster } from 'react-hot-toast';
-import Link from 'next/link';
-function Page() {
+import { SyntheticEvent } from 'react';
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth';
+import { app } from './firebase/firebase';
+
+
+const Page = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const router = useRouter();
 
-  const dummyUser = {
-    email: 'rummy@gmail.com',
-    password: 'rummy1234',
+  
+  const handleLogin = async (e: SyntheticEvent) => {
+    e.preventDefault();
+
+    // Initialize Firebase auth
+    const auth = getAuth(app);
+
+
+    try {
+      // Sign in with email and password
+      
+      await signInWithEmailAndPassword(auth, email, password);
+
+      // Redirect to the dashboard on successful login
+      await router.push('/rummy/dashboard');
+
+      // Optionally, you can add a toast notification for successful login
+      toast.success('Login successful!');
+    } catch (error) {
+      // Log the full error object to the console
+      console.error('Authentication failed', error);
+
+      // Display error using toast
+      toast.error('Authentication failed. Please check your credentials.');
+    }
+
   };
 
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault(); 
-    if (email === dummyUser.email && password === dummyUser.password) {
-      router.push('/rummy/dashboard');
-    } else {
-      toast.error('Invalid email or password');
-    }
-  };
-  
+
+
 
   return (
     <div className="mt-10 mx-auto w-full max-w-sm p-4">
@@ -67,14 +87,14 @@ function Page() {
         </div>
 
         <div>
-          <button 
-             type="submit"
+          <button
+            type="submit"
             className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-2 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
+          >
             Sign in
 
           </button>
-         
+
         </div>
       </form>
     </div>
