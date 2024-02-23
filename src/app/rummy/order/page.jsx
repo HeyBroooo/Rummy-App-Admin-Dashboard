@@ -54,10 +54,8 @@ export default function Orders() {
       console.log("Before setting gameId in state:", editFormData.gameId);
       console.log("Received gameId:", gameId);
 
-      // Convert gameId to number if it's a string
       const id = typeof gameId === "string" ? gameId : String(gameId);
 
-      // Set the gameId in state
       setEditFormData({
         ...editFormData,
         gameId: id,
@@ -65,12 +63,9 @@ export default function Orders() {
 
       console.log("After setting gameId in state:", editFormData.gameId);
 
-      // Fetch game data using getGameData
       const gameData = await getGameData(id);
       console.log("Fetched data:", gameData);
 
-      // Show the form or update state as needed
-      // For example, you can set the fetched data to editFormData
       setEditFormData((prevData) => ({
         ...prevData,
         Name: gameData.Name,
@@ -80,7 +75,6 @@ export default function Orders() {
         isTop: gameData.isTop,
       }));
 
-      // Open the edit form
       setEditFormOpen(true);
     } catch (error) {
       console.error("Error toggling edit form:", error);
@@ -97,7 +91,6 @@ export default function Orders() {
 
   const updateGame = async (gameId, updatedGameData) => {
     try {
-      // Ensure that the 'Ranked' field is set in the 'updatedGameData' object
       if (updatedGameData.Ranked === undefined) {
         console.error('Error updating game: "Ranked" field is undefined');
         return;
@@ -107,8 +100,10 @@ export default function Orders() {
       await updateDoc(gameDocRef, updatedGameData);
   
       console.log('Game successfully updated.');
+      toast.success('Game successfully updated.');
     } catch (error) {
       console.error('Error updating game:', error);
+      toast.error('Error updating game:', error);
     }
   };
   
@@ -119,6 +114,7 @@ export default function Orders() {
     try {
       if (!editFormData.gameId) {
         console.error('Game ID is undefined or null');
+
         return;
       }
   
@@ -130,13 +126,10 @@ export default function Orders() {
         Downloads: editFormData.Downloads,
         Ranked: editFormData.Ranked,
         isTop: editFormData.isTop,
-        // Add other fields as needed
       });
   
-      // Additional logic after successful update
       console.log('App successfully updated.');
   
-      // Close the form or clear the form state as needed
       setEditFormOpen(false);
       setEditFormData({
         Name: "",
@@ -145,14 +138,13 @@ export default function Orders() {
         Downloads: 0,
         Ranked: 0,
         isTop: false,
-        gameId: "", // Reset gameId
+        gameId: "", 
       });
   
-      // Trigger a force update to refresh the component
       setForceUpdate((prev) => prev + 1);
     } catch (error) {
       console.error('Error updating app:', error);
-      // Handle the error as needed
+      toast.error('Error updating app:', error);
     }
   };
   
