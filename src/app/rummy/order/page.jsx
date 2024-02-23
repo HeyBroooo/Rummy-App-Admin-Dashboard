@@ -17,7 +17,9 @@ export default function Orders() {
     Name: "",
     Image: "",
     isRanked: 0,
+    Description: "",
     Downloads: 0,
+    Bonus: 0,
     isTop: false,
   });
 
@@ -71,8 +73,11 @@ export default function Orders() {
         Name: gameData.Name,
         Image: gameData.Image,
         isRanked: gameData.isRanked,
+        Description: gameData.Description,
         Downloads: gameData.Downloads,
+        Bonus: gameData.Bonus,
         isTop: gameData.isTop,
+        gameId: id,
       }));
 
       setEditFormOpen(true);
@@ -88,67 +93,62 @@ export default function Orders() {
     });
   };
 
-
   const updateGame = async (gameId, updatedGameData) => {
     try {
       if (updatedGameData.Ranked === undefined) {
         console.error('Error updating game: "Ranked" field is undefined');
         return;
       }
-  
+
       const gameDocRef = doc(db, "All-Apps-collection", gameId);
       await updateDoc(gameDocRef, updatedGameData);
-  
-      console.log('Game successfully updated.');
-      toast.success('Game successfully updated.');
+
+      console.log("Game successfully updated.");
+      toast.success("Game successfully updated.");
     } catch (error) {
-      console.error('Error updating game:', error);
-      toast.error('Error updating game:', error);
+      console.error("Error updating game:", error);
+      toast.error("Error updating game:", error);
     }
   };
-  
-  
-  
 
   const handleUpdateApp = async () => {
     try {
       if (!editFormData.gameId) {
-        console.error('Game ID is undefined or null');
+        console.error("Game ID is undefined or null");
 
         return;
       }
-  
-      // Assuming updateGame is an asynchronous function
+
       await updateGame(editFormData.gameId, {
         Name: editFormData.Name,
         Image: editFormData.Image,
         isRanked: editFormData.isRanked,
+        Description: editFormData.Description,
         Downloads: editFormData.Downloads,
-        Ranked: editFormData.Ranked,
+        Bonus: editFormData.Bonus,
         isTop: editFormData.isTop,
       });
-  
-      console.log('App successfully updated.');
-  
+
+      console.log("App successfully updated.");
+
       setEditFormOpen(false);
       setEditFormData({
         Name: "",
         Image: "",
-        isRanked: false,
+        isRanked: 0,
         Downloads: 0,
-        Ranked: 0,
+        Description: "",
+        Bonus: 0,
         isTop: false,
-        gameId: "", 
+        gameId: "",
       });
-  
+
       setForceUpdate((prev) => prev + 1);
     } catch (error) {
-      console.error('Error updating app:', error);
-      toast.error('Error updating app:', error);
+      console.error("Error updating app:", error);
+      toast.error("Error updating app:", error);
     }
   };
-  
-  
 
   /////////////////////////////////////////////////////////////////
 
@@ -314,7 +314,7 @@ export default function Orders() {
                         color="success"
                         variant="bordered"
                         onClick={() => toggleEditForm(value.id)}
-                        >
+                      >
                         Edit App
                       </Button>
                     </td>
@@ -341,6 +341,59 @@ export default function Orders() {
               placeholder="Enter Name"
               className="border border-gray-300 p-2 mb-4 w-full"
             />
+
+            <label htmlFor="Downloads" className="text-sm font-semibold mr-2">
+              Downloads
+            </label>
+
+            <input
+              type="text"
+              name="Downloads"
+              value={editFormData.Downloads}
+              onChange={handleEditFormChange}
+              placeholder="Enter Downloads"
+              className="border border-gray-300 p-2 mb-4 w-full"
+            />
+
+            <label htmlFor="Description" className="text-sm font-semibold mr-2">
+              Description
+            </label>
+
+            <input
+              type="text"
+              name="Description"
+              value={editFormData.Description}
+              onChange={handleEditFormChange}
+              placeholder="Enter Description"
+              className="border border-gray-300 p-2 mb-4 w-full"
+            />
+
+            <label htmlFor="Bonus" className="text-sm font-semibold mr-2">
+              Bonus
+            </label>
+
+            <input
+              type="text"
+              name="Bonus"
+              value={editFormData.Bonus}
+              onChange={handleEditFormChange}
+              placeholder="Enter Bonus"
+              className="border border-gray-300 p-2 mb-4 w-full"
+            />
+
+            <label htmlFor="Ranked" className="text-sm font-semibold mr-2">
+              Ranked
+            </label>
+
+            <input
+              type="text"
+              name="Ranked"
+              value={editFormData.isRanked}
+              onChange={handleEditFormChange}
+              placeholder="Enter Ranked"
+              className="border border-gray-300 p-2 mb-4 w-full"
+            />
+
             <Button
               color="success"
               onClick={() => handleUpdateApp(editFormData.id)}
