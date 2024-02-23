@@ -1,16 +1,164 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { GetAllGames, updateGame } from "../../firebase/function";
-import {Button} from "@nextui-org/react";
-import toast, { Toaster } from 'react-hot-toast';
-import { deleteDoc, doc } from "firebase/firestore";
+import { Button } from "@nextui-org/react";
+import toast, { Toaster } from "react-hot-toast";
+import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
 import { db } from "@/app/firebase/firebase";
-
 
 export default function Orders() {
   const [gamesData, setGamesData] = useState([]);
   const [loading, setLoading] = useState(true);
   const [forceUpdate, setForceUpdate] = useState(0);
+
+  /////////////////////////////////////////////////////////////////
+  const [editFormOpen, setEditFormOpen] = useState(false);
+  const [editFormData, setEditFormData] = useState({
+    Name: "",
+    Image: "",
+    isRanked: 0,
+    Downloads: 0,
+    isTop: false,
+  });
+
+  const getGameData = async (gameId) => {
+    try {
+      if (typeof gameId !== "string" || gameId.trim() === "") {
+        console.error("Error fetching game data: Invalid gameId");
+        throw new Error("Invalid gameId");
+      }
+
+      console.log("Fetching game data for gameId:", gameId);
+
+      const gameDocRef = doc(db, "All-Apps-collection", gameId);
+      console.log("gameDocRef:", gameDocRef);
+
+      const gameDocSnapshot = await getDoc(gameDocRef);
+
+      if (gameDocSnapshot.exists()) {
+        const gameData = gameDocSnapshot.data();
+        console.log("gameData:", gameData);
+        return gameData;
+      } else {
+        console.error("Error fetching game data: Document does not exist");
+        throw new Error("Document does not exist");
+      }
+    } catch (error) {
+      console.error("Error fetching game data:", error);
+      throw error;
+    }
+  };
+
+  const toggleEditForm = async (gameId) => {
+    try {
+      console.log("Before setting gameId in state:", editFormData.gameId);
+      console.log("Received gameId:", gameId);
+
+      // Convert gameId to number if it's a string
+      const id = typeof gameId === "string" ? gameId : String(gameId);
+
+      // Set the gameId in state
+      setEditFormData({
+        ...editFormData,
+        gameId: id,
+      });
+
+      console.log("After setting gameId in state:", editFormData.gameId);
+
+      // Fetch game data using getGameData
+      const gameData = await getGameData(id);
+      console.log("Fetched data:", gameData);
+
+      // Show the form or update state as needed
+      // For example, you can set the fetched data to editFormData
+      setEditFormData((prevData) => ({
+        ...prevData,
+        Name: gameData.Name,
+        Image: gameData.Image,
+        isRanked: gameData.isRanked,
+        Downloads: gameData.Downloads,
+        isTop: gameData.isTop,
+      }));
+
+      // Open the edit form
+      setEditFormOpen(true);
+    } catch (error) {
+      console.error("Error toggling edit form:", error);
+    }
+  };
+
+  const handleEditFormChange = (e) => {
+    setEditFormData({
+      ...editFormData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+
+  const updateGame = async (gameId, updatedGameData) => {
+    try {
+      // Ensure that the 'Ranked' field is set in the 'updatedGameData' object
+      if (updatedGameData.Ranked === undefined) {
+        console.error('Error updating game: "Ranked" field is undefined');
+        return;
+      }
+  
+      const gameDocRef = doc(db, "All-Apps-collection", gameId);
+      await updateDoc(gameDocRef, updatedGameData);
+  
+      console.log('Game successfully updated.');
+    } catch (error) {
+      console.error('Error updating game:', error);
+    }
+  };
+  
+  
+  
+
+  const handleUpdateApp = async () => {
+    try {
+      if (!editFormData.gameId) {
+        console.error('Game ID is undefined or null');
+        return;
+      }
+  
+      // Assuming updateGame is an asynchronous function
+      await updateGame(editFormData.gameId, {
+        Name: editFormData.Name,
+        Image: editFormData.Image,
+        isRanked: editFormData.isRanked,
+        Downloads: editFormData.Downloads,
+        Ranked: editFormData.Ranked,
+        isTop: editFormData.isTop,
+        // Add other fields as needed
+      });
+  
+      // Additional logic after successful update
+      console.log('App successfully updated.');
+  
+      // Close the form or clear the form state as needed
+      setEditFormOpen(false);
+      setEditFormData({
+        Name: "",
+        Image: "",
+        isRanked: false,
+        Downloads: 0,
+        Ranked: 0,
+        isTop: false,
+        gameId: "", // Reset gameId
+      });
+  
+      // Trigger a force update to refresh the component
+      setForceUpdate((prev) => prev + 1);
+    } catch (error) {
+      console.error('Error updating app:', error);
+      // Handle the error as needed
+    }
+  };
+  
+  
+
+  /////////////////////////////////////////////////////////////////
 
   useEffect(() => {
     GetAllGames().then((data) => {
@@ -28,17 +176,17 @@ export default function Orders() {
         );
         return updatedGames;
       });
-  
+
       await updateGame(String(gameId), { isTop: true });
-  
+
       console.log("Game updated successfully");
-      toast.success('App marked as Top App');
+      toast.success("App marked as Top App");
     } catch (error) {
       console.error("Error making best app:", error);
-      toast.error('Error making best app:', error);
+      toast.error("Error making best app:", error);
     }
   };
-  
+
   const RemoveBest = async (gameId) => {
     try {
       setGamesData((prevGames) => {
@@ -47,14 +195,14 @@ export default function Orders() {
         );
         return updatedGames;
       });
-  
+
       await updateGame(String(gameId), { isTop: false });
-  
+
       console.log("Game updated successfully");
-      toast.success('Removed from Top Apps');
+      toast.success("Removed from Top Apps");
     } catch (error) {
       console.error("Error undoing best app:", error);
-      toast.error('Error undoing best app:', error);
+      toast.error("Error undoing best app:", error);
     }
   };
 
@@ -62,11 +210,13 @@ export default function Orders() {
     try {
       const gameIdString = String(gameId);
 
-      setGamesData((prevGames) => prevGames.filter((game) => game.id !== gameIdString));
+      setGamesData((prevGames) =>
+        prevGames.filter((game) => game.id !== gameIdString)
+      );
 
-      await deleteDoc(doc(db, 'All-Apps-collection', gameIdString));
+      await deleteDoc(doc(db, "All-Apps-collection", gameIdString));
 
-      toast.success('App deleted successfully');
+      toast.success("App deleted successfully");
 
       setForceUpdate((prev) => prev + 1);
     } catch (error) {
@@ -74,9 +224,6 @@ export default function Orders() {
       console.error("Error deleting app:", error);
     }
   };
-  
-  
-  
 
   return (
     <main className="w-full px-4 pb-8 pt-16 md:mt-0 mt-10 bg-white md:px-8 rounded-lg shadow-md">
@@ -85,21 +232,37 @@ export default function Orders() {
           Modify-Your-App
         </h1>
         <div className="overflow-x-auto">
-        
           <div className="max-w-full overflow-auto">
-          <Toaster />
+            <Toaster />
             <table className="min-w-full table-auto border-collapse border border-gray-300 rounded-md">
               <thead className="bg-blue-500 text-white">
                 <tr>
                   <th className="border border-gray-300 p-2 text-black">#</th>
-                  <th className="border border-gray-300 p-2 text-black">Game Name</th>
-                  <th className="border border-gray-300 p-2 text-black">Image</th>
-                  <th className="border border-gray-300 p-2 text-black">Ranked</th>
-                  <th className="border border-gray-300 p-2 text-black">Best Game</th>
-                  <th className="border border-gray-300 p-2 text-black">Downloads</th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Game Name
+                  </th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Image
+                  </th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Ranked
+                  </th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Best Game
+                  </th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Downloads
+                  </th>
                   <th className="border border-gray-300 p-2 text-black">Top</th>
-                  <th className="border border-gray-300 p-2 text-black">Undo</th>
-                  <th className="border border-gray-300 p-2 text-black">Delete</th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Undo
+                  </th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Delete
+                  </th>
+                  <th className="border border-gray-300 p-2 text-black">
+                    Edit
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -121,14 +284,15 @@ export default function Orders() {
                       {value.isRanked}
                     </td>
                     <td className="border border-gray-300 p-2">
-                    {value.isTop !== undefined ? value.isTop.toString() : ''}
+                      {value.isTop !== undefined ? value.isTop.toString() : ""}
                     </td>
                     <td className="border border-gray-300 p-2">
                       {value.Downloads}
                     </td>
                     <td className="border border-gray-300 p-2">
                       <Button
-                        color="success" variant="bordered"
+                        color="success"
+                        variant="bordered"
                         onClick={() => handleMakeBestApp(value.id)}
                       >
                         Make Top App
@@ -136,7 +300,8 @@ export default function Orders() {
                     </td>
                     <td className="border border-gray-300 p-2">
                       <Button
-                        color="danger"  variant="bordered"
+                        color="danger"
+                        variant="bordered"
                         onClick={() => RemoveBest(value.id)}
                       >
                         Undo Top App
@@ -144,10 +309,21 @@ export default function Orders() {
                     </td>
                     <td className="border border-gray-300 p-2">
                       <Button
-                        color="danger"  variant="bordered"
+                        color="danger"
+                        variant="bordered"
                         onClick={() => DeleteApp(value.id)}
                       >
                         Delete App
+                      </Button>
+                    </td>
+
+                    <td className="border border-gray-300 p-2">
+                      <Button
+                        color="success"
+                        variant="bordered"
+                        onClick={() => toggleEditForm(value.id)}
+                        >
+                        Edit App
                       </Button>
                     </td>
                   </tr>
@@ -156,6 +332,38 @@ export default function Orders() {
             </table>
           </div>
         </div>
+
+        {editFormOpen && (
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-8 rounded-md shadow-md">
+            <h2 className="text-xl font-bold mb-2">Edit App Form</h2>
+
+            <label htmlFor="Name" className="text-sm font-semibold mr-2">
+              Name
+            </label>
+
+            <input
+              type="text"
+              name="Name"
+              value={editFormData.Name}
+              onChange={handleEditFormChange}
+              placeholder="Enter Name"
+              className="border border-gray-300 p-2 mb-4 w-full"
+            />
+            <Button
+              color="success"
+              onClick={() => handleUpdateApp(editFormData.id)}
+            >
+              Update App
+            </Button>
+            <Button
+              className="ml-2"
+              color="danger"
+              onClick={() => setEditFormOpen(false)}
+            >
+              Close
+            </Button>
+          </div>
+        )}
       </div>
     </main>
   );
