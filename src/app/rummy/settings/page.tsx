@@ -12,6 +12,7 @@ interface FormData {
   Name: string;
   Title: string;
   Image: File | null;
+  Link: string;
 }
 
 export default function SettingsPage() {
@@ -19,6 +20,7 @@ export default function SettingsPage() {
     Name: "",
     Title: "",
     Image: null,
+    Link: "",
   });
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
@@ -37,11 +39,12 @@ export default function SettingsPage() {
         Name: formData.Name,
         Title: formData.Title,
         Image: imageUrl,
+        Link: formData.Link,
       });
 
       console.log("Data sent to Firebase successfully!");
       toast.success('Advertisement added successfully');
-      setFormData({ Name: "", Title: "", Image: null });
+      setFormData({ Name: "", Title: "", Image: null, Link: ""});
     } catch (error) {
       console.error("Error sending data to Firebase:", error);
       toast.error('Error adding advertisement');
@@ -116,6 +119,22 @@ export default function SettingsPage() {
             onChange={handleInputChange}
             className="mt-1 p-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
             placeholder="Title"
+            required
+          />
+        </div>
+
+        <div className="mb-4">
+          <label htmlFor="link" className="block text-sm font-medium text-gray-700">
+            Link
+          </label>
+          <input
+            type="text"
+            id="link"
+            name="Link"
+            value={formData.Link}
+            onChange={handleInputChange}
+            className="mt-1 p-2 w-full rounded-md border border-gray-300 focus:outline-none focus:ring focus:border-blue-300"
+            placeholder="Link"
             required
           />
         </div>
