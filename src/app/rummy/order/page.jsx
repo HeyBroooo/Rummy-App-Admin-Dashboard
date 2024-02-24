@@ -16,7 +16,6 @@ export default function Orders() {
   const [editFormData, setEditFormData] = useState({
     Name: "",
     Image: "",
-    isRanked: 0,
     Description: "",
     Downloads: 0,
     Bonus: 0,
@@ -72,7 +71,6 @@ export default function Orders() {
         ...prevData,
         Name: gameData.Name,
         Image: gameData.Image,
-        isRanked: gameData.isRanked,
         Description: gameData.Description,
         Downloads: gameData.Downloads,
         Bonus: gameData.Bonus,
@@ -122,7 +120,6 @@ export default function Orders() {
       await updateGame(editFormData.gameId, {
         Name: editFormData.Name,
         Image: editFormData.Image,
-        isRanked: editFormData.isRanked,
         Description: editFormData.Description,
         Downloads: editFormData.Downloads,
         Bonus: editFormData.Bonus,
@@ -135,7 +132,6 @@ export default function Orders() {
       setEditFormData({
         Name: "",
         Image: "",
-        isRanked: 0,
         Downloads: 0,
         Description: "",
         Bonus: 0,
@@ -378,19 +374,6 @@ export default function Orders() {
               value={editFormData.Bonus}
               onChange={handleEditFormChange}
               placeholder="Enter Bonus"
-              className="border border-gray-300 p-2 mb-4 w-full"
-            />
-
-            <label htmlFor="Ranked" className="text-sm font-semibold mr-2">
-              Ranked
-            </label>
-
-            <input
-              type="text"
-              name="Ranked"
-              value={editFormData.isRanked}
-              onChange={handleEditFormChange}
-              placeholder="Enter Ranked"
               className="border border-gray-300 p-2 mb-4 w-full"
             />
 
