@@ -3,8 +3,9 @@ import React, { useEffect, useState } from "react";
 import { GetAllGames, updateGame } from "../../firebase/function";
 import { Button } from "@nextui-org/react";
 import toast, { Toaster } from "react-hot-toast";
-import { deleteDoc, doc, getDoc, updateDoc } from "firebase/firestore";
-import { db } from "@/app/firebase/firebase";
+import { deleteDoc, doc, getDoc, setDoc, updateDoc } from "firebase/firestore";
+import { db, storage } from "@/app/firebase/firebase";
+import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 
 export default function Orders() {
   const [gamesData, setGamesData] = useState([]);
@@ -21,6 +22,8 @@ export default function Orders() {
     Bonus: 0,
     isTop: false,
   });
+
+  const [imageFile, setImageFile] = useState(null);
 
   const getGameData = async (gameId) => {
     try {
@@ -85,50 +88,100 @@ export default function Orders() {
   };
 
   const handleEditFormChange = (e) => {
-    setEditFormData({
-      ...editFormData,
-      [e.target.name]: e.target.value,
-    });
+    if (e.target.type === "file") {
+      const file = e.target.files[0];
+      setImageFile(file);
+    } else {
+      setEditFormData({
+        ...editFormData,
+        [e.target.name]: e.target.value,
+      });
+    }
+  };
+
+  const uploadImage = async (file, gameId) => {
+    try {
+      if (!gameId || typeof gameId !== "string") {
+        console.error("Invalid gameId:", gameId);
+        return;
+      }
+
+      const storageRef = ref(storage, `Images/All-Apps/${file.name}`);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+        },
+        (error) => {
+          console.error("Error uploading image:", error);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+            updateGameImage(gameId, { Image: downloadURL });
+          });
+        }
+      );
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
   };
 
   const updateGame = async (gameId, updatedGameData) => {
     try {
-      // Check if "Ranked" is defined or provide a default value (e.g., null)
-      const rankedValue = updatedGameData.Ranked !== undefined ? updatedGameData.Ranked : null;
-  
-      // Use the rankedValue in the update
       const gameDocRef = doc(db, "All-Apps-collection", gameId);
-      await updateDoc(gameDocRef, { ...updatedGameData, Ranked: rankedValue });
-  
+      const gameDoc = await getDoc(gameDocRef);
+
+      if (gameDoc.exists()) {
+        await updateDoc(gameDocRef, updatedGameData);
+      } else {
+        await setDoc(gameDocRef, updatedGameData);
+      }
+
       console.log("Game successfully updated.");
-      toast.success("Game successfully updated.");
     } catch (error) {
       console.error("Error updating game:", error);
-      toast.error("Error updating game:", error);
     }
   };
-  
-  
+
+  const updateGameImage = async (gameId, updatedGameData) => {
+    try {
+      const gameDocRef = doc(db, "All-Apps-collection", gameId);
+      const gameDoc = await getDoc(gameDocRef);
+
+      if (gameDoc.exists()) {
+        await updateDoc(gameDocRef, updatedGameData);
+      } else {
+        await setDoc(gameDocRef, updatedGameData);
+      }
+
+      console.log("Game image successfully updated.");
+    } catch (error) {
+      console.error("Error updating game image:", error);
+    }
+  };
 
   const handleUpdateApp = async () => {
     try {
       if (!editFormData.gameId) {
         console.error("Game ID is undefined or null");
-
         return;
       }
 
-      await updateGame(editFormData.gameId, {
-        Name: editFormData.Name,
-        Image: editFormData.Image,
-        Description: editFormData.Description,
-        Downloads: editFormData.Downloads,
-        Bonus: editFormData.Bonus,
-        isTop: editFormData.isTop,
-      });
-      
+      if (imageFile) {
+        await uploadImage(imageFile, editFormData.gameId);
+      } else {
+        await updateGame(editFormData.gameId, {
+          Name: editFormData.Name,
+          Description: editFormData.Description,
+          Downloads: editFormData.Downloads,
+          Bonus: editFormData.Bonus,
+          isTop: editFormData.isTop,
+        });
+      }
 
       console.log("App successfully updated.");
+      toast.success("App successfully updated.");
 
       setEditFormOpen(false);
       setEditFormData({
@@ -141,10 +194,11 @@ export default function Orders() {
         gameId: "",
       });
 
+      setImageFile(null);
       setForceUpdate((prev) => prev + 1);
     } catch (error) {
       console.error("Error updating app:", error);
-      toast.error("Error updating app:", error);
+      toast.error(`Error updating app: ${error.message}`);
     }
   };
 
@@ -264,12 +318,15 @@ export default function Orders() {
                     <td className="border border-gray-300 p-2">{index + 1}</td>
                     <td className="border border-gray-300 p-2">{value.Name}</td>
                     <td className="border border-gray-300 p-2">
-                      <img
-                        src={value.Image}
-                        alt={value.Name}
-                        className="w-8 h-8 object-cover rounded-full"
-                      />
+                      {value.Image && (
+                        <img
+                          src={value.Image}
+                          alt={value.Name}
+                          className="w-8 h-8 object-cover rounded-full"
+                        />
+                      )}
                     </td>
+
                     <td className="border border-gray-300 p-2">
                       {value.isRanked}
                     </td>
@@ -376,6 +433,17 @@ export default function Orders() {
               value={editFormData.Bonus}
               onChange={handleEditFormChange}
               placeholder="Enter Bonus"
+              className="border border-gray-300 p-2 mb-4 w-full"
+            />
+
+            <label htmlFor="Image" className="text-sm font-semibold mr-2">
+              Image
+            </label>
+            <input
+              type="file"
+              name="Image"
+              accept="image/*"
+              onChange={handleEditFormChange}
               className="border border-gray-300 p-2 mb-4 w-full"
             />
 
