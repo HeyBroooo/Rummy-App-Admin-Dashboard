@@ -93,14 +93,13 @@ export default function Orders() {
 
   const updateGame = async (gameId, updatedGameData) => {
     try {
-      if (updatedGameData.Ranked === undefined) {
-        console.error('Error updating game: "Ranked" field is undefined');
-        return;
-      }
-
+      // Check if "Ranked" is defined or provide a default value (e.g., null)
+      const rankedValue = updatedGameData.Ranked !== undefined ? updatedGameData.Ranked : null;
+  
+      // Use the rankedValue in the update
       const gameDocRef = doc(db, "All-Apps-collection", gameId);
-      await updateDoc(gameDocRef, updatedGameData);
-
+      await updateDoc(gameDocRef, { ...updatedGameData, Ranked: rankedValue });
+  
       console.log("Game successfully updated.");
       toast.success("Game successfully updated.");
     } catch (error) {
@@ -108,6 +107,8 @@ export default function Orders() {
       toast.error("Error updating game:", error);
     }
   };
+  
+  
 
   const handleUpdateApp = async () => {
     try {
@@ -125,6 +126,7 @@ export default function Orders() {
         Bonus: editFormData.Bonus,
         isTop: editFormData.isTop,
       });
+      
 
       console.log("App successfully updated.");
 
